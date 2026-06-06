@@ -32,7 +32,7 @@ exports.getFavoriteLocations = async (req, res) => {
       `SELECT *
        FROM favorite_location
        WHERE user_id = $1
-       ORDER BY created_at DESC`,
+       ORDER BY id DESC`,
       [req.user.id]
     );
 
@@ -121,7 +121,7 @@ exports.getFavoriteRoutes = async (req, res) => {
       `SELECT *
        FROM favorite_route
        WHERE user_id = $1
-       ORDER BY created_at DESC`,
+       ORDER BY id DESC`,
       [req.user.id]
     );
 

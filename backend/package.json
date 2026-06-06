@@ -9,6 +9,7 @@
     "db:seed": "docker exec -i inclusion_db psql -U postgres -d inclusion_plus < src/db/seeds/001_seed_initial_data.sql"
   },
   "dependencies": {
+    "axios": "^1.17.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.1",

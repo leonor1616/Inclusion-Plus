@@ -11,6 +11,14 @@ const profileRoutes = require('./routes/profileRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const helpRequestRoutes = require('./routes/helpRequestRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
+const postRoutes = require('./routes/postRoutes');
+const locationRoutes = require('./routes/locationsRoutes');
+const elevatorRoutes = require('./routes/elevatorRoutes');
+const campusAlertRoutes = require('./routes/campusAlertRoutes');
+const accessibilityFeatureRoutes = require('./routes/accessibilityFeatureRoutes');
+const academicEventRoutes = require('./routes/academicEventRoutes');
+const routeRoutes = require('./routes/routeRoutes');
+const externalLocationRoutes = require('./routes/externalLocationRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +31,12 @@ const API_ENDPOINTS = {
   reports: '/reports',
   helpRequests: '/help-requests',
   favorites: '/favorites',
+  posts: '/posts',
+  locations: '/locations',
+  elevators: '/elevators',
+  campusAlerts: '/campus-alerts',
+  academicEvents: '/academic-events',
+  routes: '/routes',
   auth: {
     register: 'POST /auth/register',
     login: 'POST /auth/login',
@@ -61,6 +75,14 @@ app.use('/profile', profileRoutes);
 app.use('/reports', reportRoutes);
 app.use('/help-requests', helpRequestRoutes);
 app.use('/favorites', favoriteRoutes);
+app.use('/posts', postRoutes);
+app.use('/locations', locationRoutes);
+app.use('/elevators', elevatorRoutes);
+app.use('/campus-alerts', campusAlertRoutes);
+app.use('/accessibility-features', accessibilityFeatureRoutes);
+app.use('/academic-events', academicEventRoutes);
+app.use('/routes', routeRoutes);
+app.use('/external-locations', externalLocationRoutes);
 
 // Protected routes
 app.get('/me', authMiddleware, (req, res) => {
