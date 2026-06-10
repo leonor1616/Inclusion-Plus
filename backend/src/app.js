@@ -19,6 +19,7 @@ const accessibilityFeatureRoutes = require('./routes/accessibilityFeatureRoutes'
 const academicEventRoutes = require('./routes/academicEventRoutes');
 const routeRoutes = require('./routes/routeRoutes');
 const externalLocationRoutes = require('./routes/externalLocationRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ const API_ENDPOINTS = {
   campusAlerts: '/campus-alerts',
   academicEvents: '/academic-events',
   routes: '/routes',
+  uploads: '/uploads',
   auth: {
     register: 'POST /auth/register',
     login: 'POST /auth/login',
@@ -44,7 +46,10 @@ const API_ENDPOINTS = {
 };
 
 app.use(cors());
+app.use('/upload', uploadRoutes);
+
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Public routes
 app.get('/', (req, res) => {
@@ -83,7 +88,7 @@ app.use('/accessibility-features', accessibilityFeatureRoutes);
 app.use('/academic-events', academicEventRoutes);
 app.use('/routes', routeRoutes);
 app.use('/external-locations', externalLocationRoutes);
-
+app.use('/upload', uploadRoutes);
 // Protected routes
 app.get('/me', authMiddleware, (req, res) => {
   res.json(req.user);

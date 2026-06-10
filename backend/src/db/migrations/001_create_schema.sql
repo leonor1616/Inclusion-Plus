@@ -5,6 +5,7 @@
 -- Migration: 001_create_schema.sql
 -- ============================================================================
 
+CREATE EXTENSION IF NOT EXISTS postgis;
 -- ============================================================================
 -- 1. INDEPENDENT TABLES
 -- ============================================================================
@@ -38,6 +39,7 @@ CREATE TABLE external_location (
     category VARCHAR(100),
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6),
+    geom GEOGRAPHY(POINT,4326),
     source_url TEXT,
     user_review_count INT NOT NULL DEFAULT 0,
     average_user_rating DECIMAL(3,2),
@@ -89,7 +91,7 @@ CREATE TABLE incampus_university_location (
     room_code VARCHAR(50),
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6),
-    geom TEXT,
+    geom GEOGRAPHY(POINT,4326),
     is_indoor BOOLEAN NOT NULL DEFAULT TRUE,
     parent_location_id BIGINT REFERENCES incampus_university_location(id),
     user_review_count INT NOT NULL DEFAULT 0,
@@ -411,3 +413,11 @@ CREATE INDEX idx_favorite_route_origin_external ON favorite_route(origin_externa
 CREATE INDEX idx_favorite_route_destination_external ON favorite_route(destination_external_location_id);
 
 CREATE INDEX idx_accessibility_profile_user_id ON accessibility_profile(user_id);
+
+CREATE INDEX idx_external_location_geom
+ON external_location
+USING GIST (geom);
+
+CREATE INDEX idx_incampus_location_geom
+ON incampus_university_location
+USING GIST (geom);
