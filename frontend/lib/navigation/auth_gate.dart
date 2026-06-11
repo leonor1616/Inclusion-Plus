@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/auth/login.dart';
+import '../screens/auth/login_screen.dart';
 import '../screens/home/home.dart';
 import '../state/auth_provider.dart';
 
@@ -14,9 +14,7 @@ class AuthGate extends StatelessWidget {
 
     if (auth.isLoadingSession) {
       return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 

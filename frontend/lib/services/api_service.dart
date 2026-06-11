@@ -13,6 +13,7 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
+// trocar isto para que chame a api baseada em ip atual
 class ApiService {
   static const String baseUrl = String.fromEnvironment(
   'API_BASE_URL',
