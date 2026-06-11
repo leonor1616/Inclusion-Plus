@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
-import 'screens/home.dart';
+import 'package:provider/provider.dart';
+
+import 'navigation/auth_gate.dart';
+import 'state/auth_provider.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider()..loadSession(),
+        ),
+      ],
+      child: const InclusionPlusApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class InclusionPlusApp extends StatelessWidget {
+  const InclusionPlusApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Inclusion+',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const HomeScreen(),
+      home: const AuthGate(),
     );
   }
 }
