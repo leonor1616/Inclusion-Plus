@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/app_styles.dart';
+import '../../widgets/app_header.dart';
+import '../../widgets/search_bar.dart';
+
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Community'),
-      ),
-      body: const Center(
-        child: Text('Community Screen'),
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const AppHeader(
+              logoAsset: 'assets/logos/inclusion_logo_purple.svg',
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: AppSearchBar(),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+

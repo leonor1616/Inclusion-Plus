@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
 
+// app_styles.dart
+
+class AppSpacing {
+  static const double screenMargin = 16;
+
+  static const EdgeInsets screenPadding =
+      EdgeInsets.symmetric(horizontal: screenMargin);
+
+  static const EdgeInsets screenPaddingWithTop =
+      EdgeInsets.fromLTRB(screenMargin, 16, screenMargin, 0);
+}
+
+
 class AppColors {
   // Core Colors
 
@@ -42,61 +55,66 @@ class AppGradients {
 }
 
 class AppTextStyles {
+  // LEXEND
+
   static const TextStyle Header = TextStyle(
+    fontFamily: 'Lexend',
     fontSize: 25,
     fontWeight: FontWeight.w700,
-    color: AppColors.Primary,
+    height: 1,
   );
 
   static const TextStyle Heading1 = TextStyle(
+    fontFamily: 'Lexend',
     fontSize: 21,
     fontWeight: FontWeight.w700,
-    color: AppColors.Primary,
+    height: 1,
   );
 
   static const TextStyle Heading2 = TextStyle(
+    fontFamily: 'Lexend',
     fontSize: 18,
     fontWeight: FontWeight.w700,
-    color: AppColors.Primary,
+    height: 1,
   );
+
+  // OUTFIT
 
   static const TextStyle Body = TextStyle(
+    fontFamily: 'Outfit',
     fontSize: 16,
     fontWeight: FontWeight.w400,
-    color: AppColors.Primary,
-  );
-
-  static const TextStyle BodyBold = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    color: AppColors.Primary,
   );
 
   static const TextStyle BodyMedium = TextStyle(
+    fontFamily: 'Outfit',
     fontSize: 16,
     fontWeight: FontWeight.w500,
-    color: AppColors.Primary,
+  );
+
+  static const TextStyle BodyBold = TextStyle(
+    fontFamily: 'Outfit',
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
   );
 
   static const TextStyle TinyBody = TextStyle(
+    fontFamily: 'Outfit',
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    height: 1.4,
-    color: AppColors.Primary,
-  );
-
-  static const TextStyle TinyBodyBold = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w700,
-    height: 1.4,
-    color: AppColors.Primary,
   );
 
   static const TextStyle TinyBodyMediumLink = TextStyle(
+    fontFamily: 'Outfit',
     fontSize: 14,
     fontWeight: FontWeight.w500,
     decoration: TextDecoration.underline,
-    color: AppColors.Primary,
+  );
+
+  static const TextStyle TinyBodyBold = TextStyle(
+    fontFamily: 'Outfit',
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
   );
 }
 
