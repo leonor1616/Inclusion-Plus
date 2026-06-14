@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/home/home.dart';
 import 'package:provider/provider.dart';
 
 import 'state/auth_provider.dart';
@@ -6,6 +7,7 @@ import 'theme/app_theme.dart';
 import 'screens/auth/login_screen.dart';
 //import 'screens/home/home.dart';
 import 'screens/test_screen.dart';
+import 'screens/main/main_shell.dart';
 
 void main() {
   runApp(
@@ -30,11 +32,11 @@ class MyApp extends StatelessWidget {
         builder: (context, auth, child) {
           if (auth.isAuthenticated) {
             //return const HomeScreen();
-            return const InputTestScreen();
+            return const MainShell();
           }
 
           //return const LoginScreen();
-          return const InputTestScreen();
+          return const MainShell();
         },
       ),
     );

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../theme/app_styles.dart';
 import '../../widgets/app_header.dart';
 import '../../widgets/search_bar.dart';
+import '../../widgets/navbars/nav_item.dart';
+import '../../widgets/navbars/nav_items.dart';
 
 import '../community/community_screen.dart';
 import '../request_help/request_help_screen.dart';
@@ -21,52 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
 
   final List<Widget> pages = const [
-    HomeTab(),
+    HomeScreen(),
     MapScreen(),
     CommunityScreen(),
     MoreScreen(),
   ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[selectedIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.explore_outlined),
-            selectedIcon: Icon(Icons.explore),
-            label: 'Map',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.groups_outlined),
-            selectedIcon: Icon(Icons.groups),
-            label: 'Community',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.grid_view_outlined),
-            selectedIcon: Icon(Icons.grid_view),
-            label: 'More',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
 
   @override
   Widget build(BuildContext context) {
