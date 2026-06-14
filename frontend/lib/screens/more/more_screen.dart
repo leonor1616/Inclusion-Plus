@@ -17,10 +17,6 @@ class MoreScreen extends StatelessWidget {
             AppHeader(
               logoAsset: 'assets/logos/inclusion_logo_blue.svg',
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: AppSearchBar(),
-            ),
             SizedBox(height: 32),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),

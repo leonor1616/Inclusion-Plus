@@ -17,10 +17,6 @@ class CommunityScreen extends StatelessWidget {
             const AppHeader(
               logoAsset: 'assets/logos/inclusion_logo_purple.svg',
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: AppSearchBar(),
-            ),
           ],
         ),
       ),

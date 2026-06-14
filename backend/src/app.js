@@ -20,6 +20,7 @@ const academicEventRoutes = require('./routes/academicEventRoutes');
 const routeRoutes = require('./routes/routeRoutes');
 const externalLocationRoutes = require('./routes/externalLocationRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const countryRoutes = require('./routes/countryRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ const API_ENDPOINTS = {
   users: '/users',
   profile: '/profile',
   reports: '/reports',
+  countries: '/countries',
   helpRequests: '/help-requests',
   favorites: '/favorites',
   posts: '/posts',
@@ -89,6 +91,7 @@ app.use('/academic-events', academicEventRoutes);
 app.use('/routes', routeRoutes);
 app.use('/external-locations', externalLocationRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/countries', countryRoutes);
 // Protected routes
 app.get('/me', authMiddleware, (req, res) => {
   res.json(req.user);

@@ -77,7 +77,7 @@ class HomeTab extends StatelessWidget {
           children: [
             const AppHeader(
               logoAsset: 'assets/logos/inclusion_logo_magenta.svg',
-            )
+            ),
             // Add more widgets here as needed
           ],
         ),
