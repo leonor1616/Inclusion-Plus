@@ -96,12 +96,14 @@ class AppTextStyles {
     fontFamily: 'Outfit',
     fontSize: 16,
     fontWeight: FontWeight.w700,
+    height: 1.25,
   );
 
   static const TextStyle TinyBody = TextStyle(
     fontFamily: 'Outfit',
     fontSize: 14,
     fontWeight: FontWeight.w400,
+    height: 1.43,
   );
 
   static const TextStyle TinyBodyMediumLink = TextStyle(

@@ -17,40 +17,40 @@ class AppNavigationBar extends StatelessWidget {
     required this.onTap,
   });
 
-@override
-Widget build(BuildContext context) {
-  return Container(
-    color: AppColors.White,
-    padding: const EdgeInsets.only(
-      left: 12,
-      right: 12,
-      bottom: 24,
-    ),
-    child: Row(
-      children: List.generate(
-        items.length,
-        (index) {
-          return Expanded(
-            child: _NavigationBarItem(
-              item: items[index],
-              selected: currentIndex == index,
-              onTap: () {
-                if (currentIndex != index) {
-                  HapticFeedback.lightImpact();
-                  onTap(index);
-                }
-              },
-            ),
-          );
-        },
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.White,
+      padding: const EdgeInsets.only(
+        left: 4,
+        right: 4,
+        bottom: 24,
       ),
-    ),
-  );
-}
+      child: Row(
+        children: List.generate(
+          items.length,
+          (index) {
+            return Expanded(
+              child: _NavigationBarItem(
+                item: items[index],
+                selected: currentIndex == index,
+                onTap: () {
+                  if (currentIndex != index) {
+                    HapticFeedback.lightImpact();
+                    onTap(index);
+                  }
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class _NavigationBarItem extends StatelessWidget {
-  static const double itemHeight = 72;
+  static const double itemHeight = 74;
   static const double indicatorHeight = 3;
   static const double indicatorWidth = 53;
   static const double iconSize = 25;
@@ -107,13 +107,17 @@ class _NavigationBarItem extends StatelessWidget {
               const SizedBox(height: 8),
 
               SizedBox(
-                height: 20,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
+                height: 22,
+                child: OverflowBox(
+                  minWidth: 0,
+                  maxWidth: 120,
+                  alignment: Alignment.center,
                   child: Text(
                     item.label,
                     textAlign: TextAlign.center,
                     maxLines: 1,
+                    overflow: TextOverflow.visible,
+                    softWrap: false,
                     style: textStyle,
                   ),
                 ),
