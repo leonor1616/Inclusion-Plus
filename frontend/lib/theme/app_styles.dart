@@ -74,7 +74,7 @@ class AppTextStyles {
   static const TextStyle Heading2 = TextStyle(
     fontFamily: 'Lexend',
     fontSize: 18,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w500,
     height: 1,
   );
 

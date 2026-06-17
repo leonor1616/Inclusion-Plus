@@ -163,14 +163,20 @@ CREATE TABLE elevator (
 
 CREATE TABLE location_specific_accessibility_feature (
     id BIGSERIAL PRIMARY KEY,
-    incampus_location_id BIGINT NOT NULL REFERENCES incampus_university_location(id),
+    incampus_location_id BIGINT REFERENCES incampus_university_location(id),
+    external_location_id BIGINT REFERENCES external_location(id),
     feature_type_id BIGINT NOT NULL REFERENCES accessibility_feature_type(id),
     description TEXT,
     status VARCHAR(20) NOT NULL DEFAULT 'available',
+    source VARCHAR(50),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE (incampus_location_id, feature_type_id),
-    CHECK (status IN ('available', 'unavailable', 'limited'))
+    CHECK (status IN ('available', 'unavailable', 'limited', 'unknown')),
+    CHECK (
+        (incampus_location_id IS NOT NULL AND external_location_id IS NULL)
+        OR
+        (incampus_location_id IS NULL AND external_location_id IS NOT NULL)
+    )
 );
 
 -- ============================================================================
@@ -421,3 +427,14 @@ USING GIST (geom);
 CREATE INDEX idx_incampus_location_geom
 ON incampus_university_location
 USING GIST (geom);
+
+CREATE UNIQUE INDEX uq_location_feature_incampus
+ON location_specific_accessibility_feature(incampus_location_id, feature_type_id)
+WHERE incampus_location_id IS NOT NULL;
+
+CREATE UNIQUE INDEX uq_location_feature_external
+ON location_specific_accessibility_feature(external_location_id, feature_type_id)
+WHERE external_location_id IS NOT NULL;
+
+CREATE INDEX idx_location_specific_feature_external_location_id
+ON location_specific_accessibility_feature(external_location_id);
