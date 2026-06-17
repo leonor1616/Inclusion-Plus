@@ -22,6 +22,7 @@ const externalLocationRoutes = require('./routes/externalLocationRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const countryRoutes = require('./routes/countryRoutes');
 const mapRoutes = require('./routes/mapRoutes');
+const mapDirectionsRoutes = require('./routes/mapDirectionsRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,6 +44,8 @@ const API_ENDPOINTS = {
   routes: '/routes',
   mapPlaces: '/map/places',
   uploads: '/uploads',
+  externalLocations: '/external-locations',
+  mapDirections: '/map/directions',
   auth: {
     register: 'POST /auth/register',
     login: 'POST /auth/login',
@@ -95,6 +98,7 @@ app.use('/external-locations', externalLocationRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/countries', countryRoutes);
 app.use('/map', mapRoutes);
+app.use('/map', mapDirectionsRoutes);
 // Protected routes
 app.get('/me', authMiddleware, (req, res) => {
   res.json(req.user);

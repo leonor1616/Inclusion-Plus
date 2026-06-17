@@ -13,6 +13,13 @@ import '../../widgets/accessibility_tag.dart';
 import '../../widgets/buttons/button.dart';
 import '../../widgets/buttons/bottom_sheet_toggle_button.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../models/route_option_model.dart';
+import '../../services/map_directions_service.dart';
+import '../../utils/polyline_decoder.dart';
+import '../../widgets/cards/route_results_bottom_sheet.dart';
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -27,6 +34,16 @@ class _MapScreenState extends State<MapScreen> {
       DraggableScrollableController();
 
   final MapPlaceService _mapPlaceService = MapPlaceService();
+
+  final MapDirectionsService _mapDirectionsService = MapDirectionsService();
+
+  List<RouteOption> _routes = [];
+  RouteOption? _selectedRoute;
+  bool _isLoadingRoutes = false;
+  String? _routeErrorMessage;
+  bool _isShowingRouteResults = false;
+
+  Set<Polyline> _polylines = {};
 
   List<MapPlace> _places = [];
   bool _isLoadingPlaces = true;
@@ -130,6 +147,12 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _selectedPlace = null;
       _isPlaceSheetExpanded = false;
+      _isShowingRouteResults = false;
+      _routes = [];
+      _selectedRoute = null;
+      _routeErrorMessage = null;
+      _isLoadingRoutes = false;
+      _polylines = {};
     });
 
     mapController?.animateCamera(
@@ -184,6 +207,7 @@ class _MapScreenState extends State<MapScreen> {
             zoomControlsEnabled: false,
             mapToolbarEnabled: false,
             compassEnabled: true,
+            polylines: _polylines,
             onMapCreated: (controller) {
               mapController = controller;
             },
@@ -244,6 +268,19 @@ class _MapScreenState extends State<MapScreen> {
               right: 0,
               bottom: 140,
               child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_selectedPlace != null && _isShowingRouteResults)
+            RouteResultsBottomSheet(
+              routes: _routes,
+              selectedRoute: _selectedRoute,
+              isLoading: _isLoadingRoutes,
+              errorMessage: _routeErrorMessage,
+              onRetry: _loadDirectionsForSelectedPlace,
+              onRouteSelected: _selectRoute,
+              onRouteSavePressed: (route) {
+                debugPrint('Save route ${route.id}');
+              },
+              onRouteGoPressed: _openRouteInGoogleMaps,
             )
           else if (_selectedPlace != null)
             DraggableScrollableSheet(
@@ -339,7 +376,7 @@ class _MapScreenState extends State<MapScreen> {
                             Expanded(
                               child: AppButton(
                                 text: 'Get Directions',
-                                onPressed: () {},
+                                onPressed: _loadDirectionsForSelectedPlace,
                                 iconAsset: 'assets/icons/Send.svg',
                                 fullWidth: true,
                               ),
@@ -359,7 +396,7 @@ class _MapScreenState extends State<MapScreen> {
                       else
                         AppButton(
                           text: 'Get Directions',
-                          onPressed: () {},
+                          onPressed: _loadDirectionsForSelectedPlace,
                           iconAsset: 'assets/icons/Send.svg',
                           fullWidth: true,
                         ),
@@ -445,11 +482,119 @@ class _MapScreenState extends State<MapScreen> {
             MapResultsBottomSheet(
               places: _places,
               onGoPressed: (place) {
-                debugPrint('Go to ${place.name}');
+                setState(() {
+                  _selectedPlace = place;
+                  _isPlaceSheetExpanded = false;
+                  _isShowingRouteResults = false;
+                  _routes = [];
+                  _selectedRoute = null;
+                  _routeErrorMessage = null;
+                  _isLoadingRoutes = false;
+                  _polylines = {};
+                });
+
+                mapController?.animateCamera(
+                  CameraUpdate.newLatLngZoom(
+                    LatLng(place.latitude, place.longitude),
+                    17,
+                  ),
+                );
               },
             ),
         ],
       ),
     );
+  }
+
+  Future<void> _loadDirectionsForSelectedPlace() async {
+    final place = _selectedPlace;
+    if (place == null) return;
+
+    setState(() {
+      _isShowingRouteResults = true;
+      _isLoadingRoutes = true;
+      _routeErrorMessage = null;
+      _routes = [];
+      _selectedRoute = null;
+      _polylines = {};
+    });
+
+    try {
+      final routes = await _mapDirectionsService.getDirections(
+        originLat: initialPosition.latitude,
+        originLng: initialPosition.longitude,
+        destinationLat: place.latitude,
+        destinationLng: place.longitude,
+      );
+
+      if (!mounted) return;
+
+      final firstRoute = routes.isNotEmpty ? routes.first : null;
+      final encodedPolyline = firstRoute?.encodedPolyline;
+
+      setState(() {
+        _routes = routes;
+        _selectedRoute = firstRoute;
+        _isLoadingRoutes = false;
+
+        if (encodedPolyline != null && encodedPolyline.isNotEmpty) {
+          _polylines = {
+            Polyline(
+              polylineId: const PolylineId('selected_route'),
+              points: PolylineDecoder.decode(encodedPolyline),
+              width: 5,
+              color: AppColors.Accent,
+            ),
+          };
+        }
+      });
+    } catch (e) {
+      debugPrint('Failed to load directions: $e');
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingRoutes = false;
+        _routeErrorMessage = 'Could not calculate route. Please try again.';
+      });
+    }
+  }
+
+  void _selectRoute(RouteOption route) {
+    setState(() {
+      _selectedRoute = route;
+
+      final encodedPolyline = route.encodedPolyline;
+
+      if (encodedPolyline != null && encodedPolyline.isNotEmpty) {
+        _polylines = {
+          Polyline(
+            polylineId: const PolylineId('selected_route'),
+            points: PolylineDecoder.decode(encodedPolyline),
+            width: 5,
+            color: AppColors.Accent,
+          ),
+        };
+      }
+    });
+  }
+
+  Future<void> _openRouteInGoogleMaps(RouteOption route) async {
+    final uri = Uri.parse(route.googleMapsUrl);
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not open Google Maps URL: ${route.googleMapsUrl}');
+    }
+  }
+
+  void _clearRouteResults() {
+    setState(() {
+      _isShowingRouteResults = false;
+      _routes = [];
+      _selectedRoute = null;
+      _routeErrorMessage = null;
+      _isLoadingRoutes = false;
+      _polylines = {};
+    });
   }
 }
