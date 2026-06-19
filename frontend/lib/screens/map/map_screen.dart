@@ -205,8 +205,17 @@ class _MapScreenState extends State<MapScreen> {
 
       if (!mounted) return;
 
-      final userLatLng = LatLng(position.latitude, position.longitude);
+      final detectedLatLng = LatLng(position.latitude, position.longitude);
 
+      final isSimulatorDefaultLocation =
+          detectedLatLng.latitude > 37.0 &&
+          detectedLatLng.latitude < 38.5 &&
+          detectedLatLng.longitude > -123.0 &&
+          detectedLatLng.longitude < -121.0;
+
+      final userLatLng = isSimulatorDefaultLocation
+          ? initialPosition
+          : detectedLatLng;
       setState(() {
         _userPosition = userLatLng;
       });

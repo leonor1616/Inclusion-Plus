@@ -38,13 +38,13 @@ class PlaceProfileInfoCard extends StatelessWidget {
         children: [
           if (status != null)
             _InfoRow(
-              iconAsset: 'assets/icons/clock.svg',
+              iconAsset: 'assets/icons/schedule.svg',
               label: 'Status:',
               value: status!,
             ),
           if (address != null)
             _InfoRow(
-              iconAsset: 'assets/icons/location.svg',
+              iconAsset: 'assets/icons/Location.svg',
               label: 'Address:',
               value: address!,
             ),
