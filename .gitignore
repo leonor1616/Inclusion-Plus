@@ -3,3 +3,10 @@ node_modules/
 npm-debug.log*
 backend/uploads/*
 !backend/uploads/.gitkeep
+backend/.env
+frontend/.env
+.env
+.idea/
+*.iml
+.flutter-plugins-dependencies
+node_modules/

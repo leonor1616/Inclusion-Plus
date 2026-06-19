@@ -22,5 +22,6 @@ class CommunityScreen extends StatelessWidget {
       ),
     );
   }
+  
 }
 

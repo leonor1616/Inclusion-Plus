@@ -18,6 +18,7 @@ class MapSearchResultsScreen extends StatefulWidget {
 class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
   final TextEditingController _controller = TextEditingController();
   final MapPlaceService _mapPlaceService = MapPlaceService();
+  final FocusNode _searchFocusNode = FocusNode();
 
   Timer? _debounce;
 
@@ -27,8 +28,19 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _searchFocusNode.requestFocus();
+    });
+  }
+
+  @override
   void dispose() {
     _debounce?.cancel();
+    _searchFocusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -112,7 +124,7 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.screenMargin,
-                24,
+                8,
                 AppSpacing.screenMargin,
                 16,
               ),
@@ -141,6 +153,7 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
                   Expanded(
                     child: AppSearchBar(
                       controller: _controller,
+                      focusNode: _searchFocusNode,
                       hintText: 'Search Here',
                       variant: AppSearchBarVariant.filled,
                       onChanged: _onSearchChanged,

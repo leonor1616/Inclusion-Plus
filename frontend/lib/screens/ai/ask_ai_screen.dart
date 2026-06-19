@@ -6,9 +6,6 @@ class AskAiScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ask AI Assistant'),
-      ),
       body: const Center(
         child: Text('Ask AI Assistant Screen'),
       ),

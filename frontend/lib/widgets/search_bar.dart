@@ -10,6 +10,7 @@ enum AppSearchBarVariant {
 class AppSearchBar extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final AppSearchBarVariant variant;
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
@@ -19,6 +20,7 @@ class AppSearchBar extends StatelessWidget {
     super.key,
     this.hintText = 'Search Here',
     this.controller,
+    this.focusNode,
     this.variant = AppSearchBarVariant.filled,
     this.onTap,
     this.onChanged,
@@ -60,6 +62,7 @@ class AppSearchBar extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: controller,
+                  focusNode: focusNode,
                   readOnly: readOnly,
                   onTap: onTap,
                   onChanged: onChanged,

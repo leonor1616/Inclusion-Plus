@@ -22,6 +22,8 @@ class RouteOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shouldShowLineSummary = route.lineSummary.trim().isNotEmpty &&
+        route.lineSummary.trim().toLowerCase() != 'walking';
     return Semantics(
       button: true,
       selected: isSelected,
@@ -111,29 +113,31 @@ class RouteOptionCard extends StatelessWidget {
                         color: AppColors.Primary,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.chevron_right,
-                      size: 24,
-                      color: AppColors.Primary,
-                    ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.route,
-                      size: 26,
-                      color: AppColors.Primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        route.modeSummary,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.Body.copyWith(
-                          color: AppColors.Primary,
+                    if (shouldShowLineSummary) ...[
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.chevron_right,
+                        size: 24,
+                        color: AppColors.Primary,
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.route,
+                        size: 26,
+                        color: AppColors.Primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          route.lineSummary,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.Body.copyWith(
+                            color: AppColors.Primary,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 16),

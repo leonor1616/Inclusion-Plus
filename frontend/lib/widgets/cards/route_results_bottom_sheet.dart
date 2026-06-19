@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../models/route_option_model.dart';
 import '../../theme/app_styles.dart';
+import '../buttons/bottom_sheet_toggle_button.dart';
 import 'route_option_card.dart';
 
 class RouteResultsBottomSheet extends StatelessWidget {
   final List<RouteOption> routes;
   final RouteOption? selectedRoute;
+  final DraggableScrollableController? controller;
+  final bool isExpanded;
+  final VoidCallback onToggleExpanded;
   final bool isLoading;
   final String? errorMessage;
   final VoidCallback? onRetry;
@@ -18,6 +22,9 @@ class RouteResultsBottomSheet extends StatelessWidget {
     super.key,
     required this.routes,
     required this.selectedRoute,
+    required this.isExpanded,
+    required this.onToggleExpanded,
+    this.controller,
     required this.onRouteSelected,
     required this.onRouteGoPressed,
     required this.onRouteSavePressed,
@@ -29,6 +36,7 @@ class RouteResultsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
+      controller: controller,
       initialChildSize: 0.42,
       minChildSize: 0.24,
       maxChildSize: 0.86,
@@ -55,9 +63,7 @@ class RouteResultsBottomSheet extends StatelessWidget {
               ),
             ],
           ),
-          child: ListView(
-            controller: scrollController,
-            padding: EdgeInsets.zero,
+          child: Column(
             children: [
               Center(
                 child: Container(
@@ -70,49 +76,63 @@ class RouteResultsBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                isLoading
-                    ? 'Calculating route...'
-                    : 'Showing ${routes.length} Route Results',
-                style: AppTextStyles.BodyMedium.copyWith(
-                  color: AppColors.Primary,
+              BottomSheetToggleButton(
+                isExpanded: isExpanded,
+                collapsedText: 'Click to see route results',
+                expandedText: 'Click to minimize route results',
+                onTap: onToggleExpanded,
+                leading: Text(
+                  isLoading
+                      ? 'Calculating route...'
+                      : 'Showing ${routes.length} Route Results',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.BodyMedium.copyWith(
+                    color: AppColors.Primary,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
-
-              if (isLoading)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              else if (errorMessage != null)
-                _RouteErrorState(
-                  message: errorMessage!,
-                  onRetry: onRetry,
-                )
-              else if (routes.isEmpty)
-                Text(
-                  'No routes found',
-                  style: AppTextStyles.Body.copyWith(
-                    color: AppColors.PrimaryLighter,
-                  ),
-                )
-              else
-                for (final route in routes)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: RouteOptionCard(
-                      route: route,
-                      isSelected: selectedRoute?.id == route.id,
-                      onSelected: () => onRouteSelected(route),
-                      onSavePressed: () => onRouteSavePressed(route),
-                      onGoPressed: () => onRouteGoPressed(route),
-                    ),
-                  ),
-
-              const SizedBox(height: 120),
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    if (isLoading)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 40),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else if (errorMessage != null)
+                      _RouteErrorState(
+                        message: errorMessage!,
+                        onRetry: onRetry,
+                      )
+                    else if (routes.isEmpty)
+                      Text(
+                        'No routes found',
+                        style: AppTextStyles.Body.copyWith(
+                          color: AppColors.PrimaryLighter,
+                        ),
+                      )
+                    else
+                      for (final route in routes)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: RouteOptionCard(
+                            route: route,
+                            isSelected: selectedRoute?.id == route.id,
+                            onSelected: () => onRouteSelected(route),
+                            onSavePressed: () => onRouteSavePressed(route),
+                            onGoPressed: () => onRouteGoPressed(route),
+                          ),
+                        ),
+                    const SizedBox(height: 120),
+                  ],
+                ),
+              ),
             ],
           ),
         );

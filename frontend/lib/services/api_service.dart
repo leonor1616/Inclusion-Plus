@@ -27,7 +27,10 @@ class ApiService {
   }
 
   if (kIsWeb) {
-    return 'http://localhost:3000';
+    return String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:3000',
+);
   }
 
   if (Platform.isAndroid) {
@@ -35,10 +38,16 @@ class ApiService {
   }
 
   if (Platform.isIOS) {
-    return 'http://localhost:3000';
+    return String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:3000',
+);
   }
 
-  return 'http://localhost:3000';
+  return String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:3000',
+);
 }
 
   static Map<String, String> _headers({String? token}) {

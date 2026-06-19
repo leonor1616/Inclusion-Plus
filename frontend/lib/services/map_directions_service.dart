@@ -5,18 +5,17 @@ import 'package:http/http.dart' as http;
 import '../models/route_option_model.dart';
 
 class MapDirectionsService {
-  static const String _baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://localhost:3000',
-  );
-
+  static const String baseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:3000',
+);
   Future<List<RouteOption>> getDirections({
     required double originLat,
     required double originLng,
     required double destinationLat,
     required double destinationLng,
   }) async {
-    final uri = Uri.parse('$_baseUrl/map/directions').replace(
+    final uri = Uri.parse('$baseUrl/map/directions').replace(
       queryParameters: {
         'originLat': originLat.toString(),
         'originLng': originLng.toString(),

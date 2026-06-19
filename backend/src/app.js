@@ -23,6 +23,8 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const countryRoutes = require('./routes/countryRoutes');
 const mapRoutes = require('./routes/mapRoutes');
 const mapDirectionsRoutes = require('./routes/mapDirectionsRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,6 +48,7 @@ const API_ENDPOINTS = {
   uploads: '/uploads',
   externalLocations: '/external-locations',
   mapDirections: '/map/directions',
+  ai: '/ai',
   auth: {
     register: 'POST /auth/register',
     login: 'POST /auth/login',
@@ -99,6 +102,7 @@ app.use('/upload', uploadRoutes);
 app.use('/countries', countryRoutes);
 app.use('/map', mapRoutes);
 app.use('/map', mapDirectionsRoutes);
+app.use('/ai', aiRoutes);
 // Protected routes
 app.get('/me', authMiddleware, (req, res) => {
   res.json(req.user);

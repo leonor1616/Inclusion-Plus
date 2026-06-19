@@ -4,7 +4,10 @@ import 'package:flutter/foundation.dart';
 import '../models/map_place_model.dart';
 
 class MapPlaceService {
-  static const String baseUrl = 'http://192.168.1.245:3000';
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:3000',
+  );
 
   Future<List<MapPlace>> getPlaces({
     required double latitude,

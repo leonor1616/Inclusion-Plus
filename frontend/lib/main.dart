@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home/home.dart';
+
 import 'package:provider/provider.dart';
 
 import 'state/auth_provider.dart';
@@ -9,7 +10,12 @@ import 'screens/auth/login_screen.dart';
 import 'screens/test_screen.dart';
 import 'screens/main/main_shell.dart';
 
-void main() {
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+    
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AuthProvider(),
@@ -36,7 +42,7 @@ class MyApp extends StatelessWidget {
           }
 
           //return const LoginScreen();
-          return const MainShell();
+          return const LoginScreen();
         },
       ),
     );

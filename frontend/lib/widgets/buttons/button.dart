@@ -11,6 +11,7 @@ enum AppButtonVariant {
   disabled,
   outline,
   dark,
+  gradientOutline,
 }
 
 class AppButton extends StatelessWidget {
@@ -57,6 +58,8 @@ class AppButton extends StatelessWidget {
         return AppColors.White;
       case AppButtonVariant.dark:
         return AppColors.Primary;
+      case AppButtonVariant.gradientOutline:
+        return AppColors.White;
     }
   }
 
@@ -68,7 +71,7 @@ class AppButton extends StatelessWidget {
         return AppColors.White;
       case AppButtonVariant.outline:
         return AppColors.Accent;
-      case AppButtonVariant.dark:
+      case AppButtonVariant.gradientOutline:
         return AppColors.Primary;
       default:
         return AppColors.White;
@@ -88,6 +91,7 @@ class AppButton extends StatelessWidget {
 
   Color get _splashColor {
     if (variant == AppButtonVariant.outline ||
+        variant == AppButtonVariant.gradientOutline ||
         variant == AppButtonVariant.disabled ||
         variant == AppButtonVariant.alert ||
         variant == AppButtonVariant.dark) {
@@ -99,6 +103,7 @@ class AppButton extends StatelessWidget {
 
   Color get _highlightColor {
     if (variant == AppButtonVariant.outline ||
+        variant == AppButtonVariant.gradientOutline ||
         variant == AppButtonVariant.disabled ||
         variant == AppButtonVariant.alert ||
         variant == AppButtonVariant.dark) {
@@ -156,6 +161,39 @@ class AppButton extends StatelessWidget {
       ],
     );
 
+    final buttonBody = Material(
+      color: _backgroundColor,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: _isDisabled ? null : onPressed,
+        borderRadius: BorderRadius.circular(12),
+        splashColor: _splashColor,
+        highlightColor: _highlightColor,
+        child: Container(
+          width: fullWidth ? double.infinity : null,
+          height: _height,
+          padding: _padding,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: _border,
+          ),
+          child: buttonContent,
+        ),
+      ),
+    );
+
+    final decoratedButton = variant == AppButtonVariant.gradientOutline
+        ? Container(
+            width: fullWidth ? double.infinity : null,
+            padding: const EdgeInsets.all(1.4),
+            decoration: BoxDecoration(
+              gradient: AppGradients.AIModuleIndicator,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: buttonBody,
+          )
+        : buttonBody;
+
     return Semantics(
       button: true,
       enabled: !_isDisabled,
@@ -172,26 +210,7 @@ class AppButton extends StatelessWidget {
               ),
             ],
           ),
-          child: Material(
-            color: _backgroundColor,
-            borderRadius: BorderRadius.circular(12),
-            child: InkWell(
-              onTap: _isDisabled ? null : onPressed,
-              borderRadius: BorderRadius.circular(12),
-              splashColor: _splashColor,
-              highlightColor: _highlightColor,
-              child: Container(
-                width: fullWidth ? double.infinity : null,
-                height: _height,
-                padding: _padding,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: _border,
-                ),
-                child: buttonContent,
-              ),
-            ),
-          ),
+          child: decoratedButton,
         ),
       ),
     );

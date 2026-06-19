@@ -4,6 +4,7 @@ class RouteOption {
   final String distanceText;
   final String arrivalTimeText;
   final String modeSummary;
+  final String lineSummary;
   final String? encodedPolyline;
   final String googleMapsUrl;
 
@@ -13,6 +14,7 @@ class RouteOption {
     required this.distanceText,
     required this.arrivalTimeText,
     required this.modeSummary,
+    required this.lineSummary,
     required this.googleMapsUrl,
     this.encodedPolyline,
   });
@@ -24,6 +26,9 @@ class RouteOption {
       distanceText: json['distanceText']?.toString() ?? '',
       arrivalTimeText: json['arrivalTimeText']?.toString() ?? '',
       modeSummary: json['modeSummary']?.toString() ?? '',
+      lineSummary: json['lineSummary']?.toString() ??
+          json['modeSummary']?.toString() ??
+          '',
       encodedPolyline: json['encodedPolyline']?.toString(),
       googleMapsUrl: json['googleMapsUrl']?.toString() ?? '',
     );

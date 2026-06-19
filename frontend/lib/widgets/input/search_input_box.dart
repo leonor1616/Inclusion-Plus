@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_styles.dart';
 
+enum SearchInputFieldVariant {
+  defaultSearch,
+  directions,
+}
+
 class SearchInputField<T> extends StatefulWidget {
   final String label;
   final String hintText;
@@ -10,6 +15,9 @@ class SearchInputField<T> extends StatefulWidget {
   final String Function(T item) itemLabel;
   final ValueChanged<T> onSelected;
   final int minCharacters;
+  final SearchInputFieldVariant variant;
+  final String? leadingIconAsset;
+  final bool showMicrophone;
 
   const SearchInputField({
     super.key,
@@ -19,6 +27,9 @@ class SearchInputField<T> extends StatefulWidget {
     required this.itemLabel,
     required this.onSelected,
     this.minCharacters = 1,
+    this.variant = SearchInputFieldVariant.defaultSearch,
+    this.leadingIconAsset,
+    this.showMicrophone = false,
   });
 
   @override
@@ -139,6 +150,20 @@ class _SearchInputFieldState<T> extends State<SearchInputField<T>> {
                 horizontal: 24,
                 vertical: 16,
               ),
+              prefixIcon: widget.leadingIconAsset != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Image.asset(
+                        widget.leadingIconAsset!,
+                        width: 20,
+                        height: 20,
+                      ),
+                    )
+                  : null,
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: 52,
+                minHeight: 52,
+              ),
               suffixIcon: isLoading
                   ? const Padding(
                       padding: EdgeInsets.all(14),
@@ -148,17 +173,19 @@ class _SearchInputFieldState<T> extends State<SearchInputField<T>> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                     )
-                  : const Icon(Icons.search),
+                  : widget.showMicrophone
+                      ? const Icon(Icons.mic_none)
+                      : const Icon(Icons.search),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(999),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(999),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(999),
                 borderSide: const BorderSide(
                   color: AppColors.Accent,
                   width: 1.5,
