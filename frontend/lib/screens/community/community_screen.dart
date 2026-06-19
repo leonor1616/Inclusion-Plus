@@ -50,11 +50,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               children: [
-                const _CommunityStatusBar(),
+            
                 const SizedBox(height: 8),
                 const AppHeader(
                   logoAsset: 'assets/logos/inclusion_logo_purple.svg',
-                  horizontalPadding: 0,
                 ),
                 const SizedBox(height: 16),
                 const AppSearchBar(),
@@ -123,29 +122,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 }
 
-class _CommunityStatusBar extends StatelessWidget {
-  const _CommunityStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
-        ],
-      ),
-    );
-  }
-}
 
 class _CommunityInfoRow extends StatelessWidget {
   const _CommunityInfoRow();

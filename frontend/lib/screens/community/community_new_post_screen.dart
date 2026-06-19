@@ -107,7 +107,7 @@ class _CommunityNewPostScreenState extends State<CommunityNewPostScreen> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                const _NewPostStatusBar(),
+               
                 _NewPostTopBar(onBack: () => Navigator.of(context).pop()),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -193,29 +193,6 @@ class _CommunityNewPostScreenState extends State<CommunityNewPostScreen> {
   }
 }
 
-class _NewPostStatusBar extends StatelessWidget {
-  const _NewPostStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
-        ],
-      ),
-    );
-  }
-}
 
 class _NewPostTopBar extends StatelessWidget {
   final VoidCallback onBack;

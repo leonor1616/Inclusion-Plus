@@ -189,7 +189,7 @@ class _ReportIssueForm extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const _ReportStatusBar(),
+        
         _ReportTopBar(title: 'Report Issue', onBack: onBack),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -288,7 +288,7 @@ class _ReportSubmitted extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const _ReportStatusBar(),
+        
         _ReportTopBar(title: 'Report Submitted', onBack: onBack),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -342,29 +342,6 @@ class _ReportSubmitted extends StatelessWidget {
   }
 }
 
-class _ReportStatusBar extends StatelessWidget {
-  const _ReportStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
-        ],
-      ),
-    );
-  }
-}
 
 class _ReportTopBar extends StatelessWidget {
   final String title;

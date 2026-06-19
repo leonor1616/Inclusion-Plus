@@ -27,17 +27,10 @@ class HomeScreen extends StatelessWidget {
     this.onSeeUniversity,
   });
 
-  TextStyle get _homeHeadingStyle => const TextStyle(
-        fontFamily: 'Outfit',
-        fontSize: 21,
-        fontWeight: FontWeight.w600,
-        height: 1,
-        letterSpacing: 0.21,
-        color: AppColors.Primary,
-      );
-
   @override
   Widget build(BuildContext context) {
+    final topSpacing = MediaQuery.of(context).padding.top + 8;
+
     void openCityAlerts() {
       Navigator.push(
         context,
@@ -47,107 +40,88 @@ class HomeScreen extends StatelessWidget {
 
     return ColoredBox(
       color: AppColors.Background,
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-          children: [
-            const _HomeStatusBar(),
-            const SizedBox(height: 8),
-            const AppHeader(
-              logoAsset: 'assets/logos/inclusion_logo_magenta.svg',
-              horizontalPadding: 0,
-            ),
-            const SizedBox(height: 16),
-            AppSearchBar(readOnly: true, onTap: onPlanRoute),
-            const SizedBox(height: 16),
-            Text(
-              'Quick Actions',
-              style: _homeHeadingStyle,
-            ),
-            const SizedBox(height: 16),
-            _QuickActionsRow(
-              onPlanRoute: onPlanRoute,
-              onReportIssue: onReportIssue,
-              onRequestHelp: onRequestHelp,
-              onIndoorMap: onIndoorMap,
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'Alerts in your city area (3 Alerts)',
-              style: _homeHeadingStyle,
-            ),
-            const SizedBox(height: 16),
-            _CityAlertCard(onTap: openCityAlerts),
-            const SizedBox(height: 16),
-            _WhiteActionCard(
-              leadingAsset: 'assets/icons/warning.svg',
-              title: 'See all 3 ongoing issues',
-              onTap: openCityAlerts,
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'From your University (2 Alerts)',
-              style: _homeHeadingStyle,
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'Elevator Issues (1)',
-              style: AppTextStyles.BodyBold,
-            ),
-            const SizedBox(height: 10),
-            _ElevatorIssueCard(onSeeOnMap: onElevatorMap ?? onPlanRoute),
-            const SizedBox(height: 32),
-            Text(
-              'Schedule Changes (1)',
-              style: AppTextStyles.BodyBold,
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'Applied Mathematics I (AMI23) - Room Update',
-              style: AppTextStyles.Body.copyWith(
-                color: AppColors.Primary,
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: 12),
-            _RoomUpdateCard(onGo: onRoomGo),
-            const SizedBox(height: 12),
-            _WhiteActionCard(
-              leadingAsset: 'assets/icons/school.svg',
-              title: 'See more from Iscte-IUL',
-              onTap: onSeeUniversity,
-            ),
-            const SizedBox(height: 48),
-            _PlainEditButton(
-              title: 'Edit the Home Page',
-              onTap: () {},
-            ),
-          ],
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.screenMargin,
+          topSpacing,
+          AppSpacing.screenMargin,
+          24,
         ),
-      ),
-    );
-  }
-}
-
-class _HomeStatusBar extends StatelessWidget {
-  const _HomeStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
         children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
+          const AppHeader(
+            logoAsset: 'assets/logos/inclusion_logo_magenta.svg',
+          ),
+          const SizedBox(height: 16),
+          AppSearchBar(readOnly: true, onTap: onPlanRoute),
+          const SizedBox(height: 16),
+          Text(
+            'Quick Actions',
+            style: AppTextStyles.Heading1.copyWith(
+              color: AppColors.Primary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _QuickActionsRow(
+            onPlanRoute: onPlanRoute,
+            onReportIssue: onReportIssue,
+            onRequestHelp: onRequestHelp,
+            onIndoorMap: onIndoorMap,
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Alerts in your city area (3 Alerts)',
+            style: AppTextStyles.Heading1.copyWith(
+              color: AppColors.Primary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _CityAlertCard(onTap: openCityAlerts),
+          const SizedBox(height: 16),
+          _WhiteActionCard(
+            leadingAsset: 'assets/icons/warning.svg',
+            title: 'See all 3 ongoing issues',
+            onTap: openCityAlerts,
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'From your University (2 Alerts)',
+            style: AppTextStyles.Heading1.copyWith(
+              color: AppColors.Primary,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'Elevator Issues (1)',
+            style: AppTextStyles.BodyBold,
+          ),
+          const SizedBox(height: 10),
+          _ElevatorIssueCard(onSeeOnMap: onElevatorMap ?? onPlanRoute),
+          const SizedBox(height: 32),
+          Text(
+            'Schedule Changes (1)',
+            style: AppTextStyles.BodyBold,
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'Applied Mathematics I (AMI23) - Room Update',
+            style: AppTextStyles.Body.copyWith(
+              color: AppColors.Primary,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _RoomUpdateCard(onGo: onRoomGo),
+          const SizedBox(height: 12),
+          _WhiteActionCard(
+            leadingAsset: 'assets/icons/school.svg',
+            title: 'See more from Iscte-IUL',
+            onTap: onSeeUniversity,
+          ),
+          const SizedBox(height: 48),
+          _PlainEditButton(
+            title: 'Edit the Home Page',
+            onTap: () {},
+          ),
         ],
       ),
     );

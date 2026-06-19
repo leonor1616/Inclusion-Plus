@@ -145,7 +145,7 @@ class _RequestHelpOptions extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const _RequestStatusBar(),
+        
         _RequestTopBar(title: 'Request Help', onBack: onBack),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -234,7 +234,7 @@ class _RequestHelpForm extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const _RequestStatusBar(),
+        
         _RequestTopBar(title: 'Request Help via Text', onBack: onBack),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -311,7 +311,7 @@ class _RequestHelpSubmitted extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const _RequestStatusBar(),
+       
         _RequestTopBar(title: 'Assistance in Progress', onBack: onBack),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -363,29 +363,6 @@ class _RequestHelpSubmitted extends StatelessWidget {
   }
 }
 
-class _RequestStatusBar extends StatelessWidget {
-  const _RequestStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 54),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 40),
-        ],
-      ),
-    );
-  }
-}
 
 class _RequestTopBar extends StatelessWidget {
   final String title;

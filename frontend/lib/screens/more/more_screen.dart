@@ -34,11 +34,11 @@ class MoreScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
           children: [
-            const _MoreStatusBar(),
+            
             const SizedBox(height: 8),
             const AppHeader(
               logoAsset: 'assets/logos/inclusion_logo_blue.svg',
-              horizontalPadding: 0,
+              
             ),
             const SizedBox(height: 16),
             AppSearchBar(readOnly: true, onTap: onSearchTap),
@@ -70,30 +70,6 @@ class MoreScreen extends StatelessWidget {
             const SizedBox(height: 24),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _MoreStatusBar extends StatelessWidget {
-  const _MoreStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
-        ],
       ),
     );
   }

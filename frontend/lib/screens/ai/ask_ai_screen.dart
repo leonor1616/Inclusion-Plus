@@ -46,7 +46,7 @@ class _AskAiScreenState extends State<AskAiScreen> {
         bottom: false,
         child: Column(
           children: [
-            const _AiStatusBar(),
+          
             const SizedBox(height: 30),
             Text(
               'Ask AI Assistant',
@@ -108,29 +108,6 @@ class _ChatMessage {
   }
 }
 
-class _AiStatusBar extends StatelessWidget {
-  const _AiStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 54),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 40),
-        ],
-      ),
-    );
-  }
-}
 
 class _ExplainButton extends StatelessWidget {
   final VoidCallback onTap;

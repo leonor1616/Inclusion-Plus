@@ -71,7 +71,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             bottom: false,
             child: Column(
               children: [
-                const _PostStatusBar(),
+                
                 _PostTopBar(title: 'Post Detail', onBack: () => Navigator.pop(context)),
                 Expanded(
                   child: ListView(
@@ -101,29 +101,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 }
 
-class _PostStatusBar extends StatelessWidget {
-  const _PostStatusBar();
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
-        ],
-      ),
-    );
-  }
-}
 
 class _PostTopBar extends StatelessWidget {
   final String title;

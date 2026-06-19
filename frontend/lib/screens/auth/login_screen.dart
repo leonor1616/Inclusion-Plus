@@ -683,7 +683,7 @@ class _OnboardingScaffold extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _MockStatusBar(),
+         
           if (showTopBar) ...[
             const SizedBox(height: 10),
             _OnboardingTopBar(onBack: onBack),
@@ -709,29 +709,6 @@ class _OnboardingScaffold extends StatelessWidget {
   }
 }
 
-class _MockStatusBar extends StatelessWidget {
-  const _MockStatusBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 34,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 4),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 4),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 12),
-        ],
-      ),
-    );
-  }
-}
 
 class _OnboardingTopBar extends StatelessWidget {
   final VoidCallback? onBack;

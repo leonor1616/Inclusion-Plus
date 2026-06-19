@@ -31,7 +31,7 @@ class CityAlertsScreen extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
-            const _AlertsStatusBar(),
+           
             _AlertsTopBar(onBack: () => Navigator.pop(context)),
             Expanded(
               child: ListView.separated(
@@ -67,29 +67,7 @@ class CityAlertsScreen extends StatelessWidget {
   }
 }
 
-class _AlertsStatusBar extends StatelessWidget {
-  const _AlertsStatusBar();
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: Row(
-        children: [
-          const SizedBox(width: 38),
-          Text('9:41', style: AppTextStyles.TinyBodyBold),
-          const Spacer(),
-          const Icon(Icons.signal_cellular_alt, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.wifi, size: 16, color: AppColors.Primary),
-          const SizedBox(width: 6),
-          const Icon(Icons.battery_full, size: 18, color: AppColors.Primary),
-          const SizedBox(width: 16),
-        ],
-      ),
-    );
-  }
-}
 
 class _AlertsTopBar extends StatelessWidget {
   final VoidCallback onBack;
