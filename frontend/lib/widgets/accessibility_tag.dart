@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../models/accessibility_tag_model.dart';
-import '../theme/app_styles.dart';
+import '../../models/accessibility_tag_model.dart';
+import '../../theme/app_styles.dart';
 
 class AccessibilityTag extends StatelessWidget {
   final AccessibilityTagModel tag;

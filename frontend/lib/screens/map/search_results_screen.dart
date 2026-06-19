@@ -11,13 +11,11 @@ import '../../widgets/search_bar.dart';
 class MapSearchResultsScreen extends StatefulWidget {
   final double? currentLatitude;
   final double? currentLongitude;
-  final String? initialQuery;
 
   const MapSearchResultsScreen({
     super.key,
     this.currentLatitude,
     this.currentLongitude,
-    this.initialQuery,
   });
 
   @override
@@ -43,15 +41,6 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _searchFocusNode.requestFocus();
-
-      final initialQuery = widget.initialQuery?.trim();
-      if (initialQuery != null && initialQuery.isNotEmpty) {
-        _controller.text = initialQuery;
-        _controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: _controller.text.length),
-        );
-        _search(initialQuery);
-      }
     });
   }
 

@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/map_place_model.dart';
-import 'api_service.dart';
 
 class GeminiService {
-  static String get baseUrl => ApiService.baseUrl;
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:3000',
+  );
 
   Future<String> getPlaceSummary(MapPlace place) async {
     final response = await http.post(

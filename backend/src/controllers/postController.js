@@ -1,23 +1,5 @@
 const pool = require('../db');
 
-const ALLOWED_POST_TYPES = ['review', 'advice', 'question'];
-const DEFAULT_POST_LIMIT = 20;
-const MAX_POST_LIMIT = 50;
-
-function parsePositiveInt(value, fallback) {
-  const parsed = Number.parseInt(value, 10);
-  return Number.isNaN(parsed) || parsed < 0 ? fallback : parsed;
-}
-
-function getPostsQueryParams(query) {
-  const requestedLimit = parsePositiveInt(query.limit, DEFAULT_POST_LIMIT);
-  const limit = Math.min(requestedLimit, MAX_POST_LIMIT);
-  const offset = parsePositiveInt(query.offset, 0);
-  const postType = query.type || query.post_type || null;
-
-  return { limit, offset, postType };
-}
-
 exports.createPost = async (req, res) => {
   const {
     incampus_university_location_id,
@@ -60,68 +42,15 @@ exports.createPost = async (req, res) => {
 };
 
 exports.getPosts = async (req, res) => {
-  const { limit, offset, postType } = getPostsQueryParams(req.query);
-
-  if (postType && !ALLOWED_POST_TYPES.includes(postType)) {
-    return res.status(400).json({
-      error: 'Invalid post type',
-      allowedTypes: ALLOWED_POST_TYPES
-    });
-  }
-
   try {
     const result = await pool.query(
-      `SELECT
-          p.id,
-          p.user_id,
-          u.full_name AS author_name,
-          u.profile_picture_url AS author_profile_picture_url,
-          p.incampus_university_location_id,
-          il.name AS incampus_location_name,
-          il.building AS incampus_location_building,
-          il.floor AS incampus_location_floor,
-          il.room_code AS incampus_location_room_code,
-          p.external_location_id,
-          el.name AS external_location_name,
-          el.category AS external_location_category,
-          p.post_type,
-          p.content,
-          p.rating,
-          p.image_url,
-          COALESCE(comment_counts.total, 0)::INT AS comments_count,
-          p.created_at,
-          p.updated_at
+      `SELECT p.*, u.full_name
        FROM post p
-       JOIN "user" u
-         ON u.id = p.user_id
-       LEFT JOIN incampus_university_location il
-         ON il.id = p.incampus_university_location_id
-       LEFT JOIN external_location el
-         ON el.id = p.external_location_id
-       LEFT JOIN (
-          SELECT post_id, COUNT(*) AS total
-          FROM comment
-          GROUP BY post_id
-       ) comment_counts
-         ON comment_counts.post_id = p.id
-       WHERE ($1::VARCHAR IS NULL OR p.post_type = $1)
-       ORDER BY p.created_at DESC, p.id DESC
-       LIMIT $2 OFFSET $3`,
-      [postType, limit, offset]
+       JOIN "user" u ON u.id = p.user_id
+       ORDER BY p.created_at DESC`
     );
 
-    res.json({
-      data: result.rows,
-      pagination: {
-        limit,
-        offset,
-        count: result.rows.length,
-        nextOffset: result.rows.length === limit ? offset + limit : null
-      },
-      filters: {
-        postType
-      }
-    });
+    res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch posts' });
