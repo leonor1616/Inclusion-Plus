@@ -58,30 +58,54 @@ exports.testGooglePlaces = async (req, res) => {
 };
 
 exports.searchMapPlaces = async (req, res) => {
-  const { query } = req.query;
-  const cleanQuery = String(query || '').trim();
+    const { query, latitude, longitude } = req.query;
+    const cleanQuery = String(query || '').trim();
 
-  if (cleanQuery.length < 2) {
-    return res.json({
-      count: 0,
-      places: [],
-    });
-  }
+    const hasLocation = latitude !== undefined && longitude !== undefined;
 
-  const normalizedQuery = cleanQuery
-    .toLowerCase()
-    .replace(/[-_]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+    const latitudeValue = hasLocation ? Number(latitude) : null;
 
-  const searchTerms = normalizedQuery
-    .split(' ')
-    .filter(Boolean);
+    const longitudeValue = hasLocation ? Number(longitude) : null;
 
-  const searchPatterns = searchTerms.map((term) => `%${term}%`);
-  const fullSearchPattern = `%${normalizedQuery}%`;
+    
 
-  const searchSql = `
+    if (
+
+        hasLocation &&
+
+        (!Number.isFinite(latitudeValue) || !Number.isFinite(longitudeValue))
+
+    ) {
+
+        return res.status(400).json({
+
+            error: 'latitude and longitude must be valid numbers',
+
+        });
+
+    }
+
+    if (cleanQuery.length < 2) {
+        return res.json({
+            count: 0,
+            places: [],
+        });
+    }
+
+    const normalizedQuery = cleanQuery
+        .toLowerCase()
+        .replace(/[-_]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const searchTerms = normalizedQuery
+        .split(' ')
+        .filter(Boolean);
+
+    const searchPatterns = searchTerms.map((term) => `%${term}%`);
+    const fullSearchPattern = `%${normalizedQuery}%`;
+
+    const searchSql = `
     SELECT
       id AS external_location_id,
       source,
@@ -94,7 +118,19 @@ exports.searchMapPlaces = async (req, res) => {
       raw_accessibility_data,
       user_review_count,
       average_user_rating,
-      NULL AS distance_meters
+      CASE
+  WHEN $3::double precision IS NOT NULL
+    AND $4::double precision IS NOT NULL
+    AND geom IS NOT NULL
+  THEN ST_Distance(
+    geom,
+    ST_SetSRID(
+      ST_MakePoint($4::double precision, $3::double precision),
+      4326
+    )::geography
+  )
+  ELSE NULL
+END AS distance_meters
     FROM external_location
     WHERE
       NOT EXISTS (
@@ -140,44 +176,45 @@ exports.searchMapPlaces = async (req, res) => {
         ) ILIKE $2 THEN 0
         ELSE 1
       END,
-      CASE
-        WHEN source = 'google_places' THEN 0
+distance_meters ASC NULLS LAST,
+CASE
+  WHEN source = 'google_places' THEN 0
         ELSE 1
       END,
       name ASC
     LIMIT 30
   `;
 
-  try {
-    let result = await pool.query(
-      searchSql,
-      [searchPatterns, fullSearchPattern]
-    );
+    try {
+        let result = await pool.query(
+            searchSql,
+            [searchPatterns, fullSearchPattern, latitudeValue, longitudeValue]
+        );
 
-    if (result.rows.length < 5) {
-      const googlePlaces = await googlePlacesService.searchPlacesByText(cleanQuery);
+        if (result.rows.length < 5) {
+            const googlePlaces = await googlePlacesService.searchPlacesByText(cleanQuery);
 
-      if (googlePlaces.length > 0) {
-        await require('../services/externalLocationService').saveLocations(googlePlaces);
-      }
+            if (googlePlaces.length > 0) {
+                await require('../services/externalLocationService').saveLocations(googlePlaces);
+            }
 
-      result = await pool.query(
-        searchSql,
-        [searchPatterns, fullSearchPattern]
-      );
+            result = await pool.query(
+                searchSql,
+                [searchPatterns, fullSearchPattern, latitudeValue, longitudeValue]
+            );
+        }
+
+        res.json({
+            count: result.rows.length,
+            places: result.rows.map((place) => ({
+                id: `external_${place.external_location_id}`,
+                ...place,
+            })),
+        });
+    } catch (err) {
+        console.error('MAP SEARCH ERROR:', err.response?.data || err);
+        res.status(500).json({
+            error: 'Failed to search map places',
+        });
     }
-
-    res.json({
-      count: result.rows.length,
-      places: result.rows.map((place) => ({
-        id: `external_${place.external_location_id}`,
-        ...place,
-      })),
-    });
-  } catch (err) {
-    console.error('MAP SEARCH ERROR:', err.response?.data || err);
-    res.status(500).json({
-      error: 'Failed to search map places',
-    });
-  }
 };

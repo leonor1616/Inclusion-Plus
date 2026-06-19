@@ -17,6 +17,15 @@ class MapSearchResultCard extends StatelessWidget {
     return place.category.replaceAll('_', ' ');
   }
 
+  String get formattedDistance {
+    if (place.distanceMeters < 100) {
+      return '${place.distanceMeters.round()} m';
+    }
+
+    final km = place.distanceMeters / 1000;
+    return '${km.toStringAsFixed(1)} km';
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -53,13 +62,26 @@ class MapSearchResultCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      place.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.BodyMedium.copyWith(
-                        color: AppColors.Primary,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            place.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.BodyMedium.copyWith(
+                              color: AppColors.Primary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          formattedDistance,
+                          style: AppTextStyles.TinyBody.copyWith(
+                            color: AppColors.PrimaryLighter,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Text(

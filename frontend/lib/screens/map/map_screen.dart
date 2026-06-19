@@ -14,6 +14,7 @@ import '../../widgets/accessibility_tag.dart';
 import '../../widgets/buttons/button.dart';
 import '../../widgets/buttons/bottom_sheet_toggle_button.dart';
 import '../../widgets/map/directions_search_header.dart';
+import '../../widgets/cards/main_map_bottom_sheet.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,6 +23,7 @@ import '../../services/map_directions_service.dart';
 import '../../utils/polyline_decoder.dart';
 import '../../widgets/cards/route_results_bottom_sheet.dart';
 import 'ai_chat_screen.dart';
+import '../../widgets/buttons/app_back_button.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -108,6 +110,15 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     return _selectedPlace?.name ?? 'Destination';
+  }
+
+  MapSearchResultsScreen _buildSearchResultsScreen() {
+    final searchOrigin = _userPosition ?? initialPosition;
+
+    return MapSearchResultsScreen(
+      currentLatitude: searchOrigin.latitude,
+      currentLongitude: searchOrigin.longitude,
+    );
   }
 
   Set<Marker> get _markers {
@@ -258,7 +269,7 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _openSearch() async {
     final selectedPlace = await Navigator.push<MapPlace>(
       context,
-      MaterialPageRoute(builder: (_) => const MapSearchResultsScreen()),
+      MaterialPageRoute(builder: (_) => _buildSearchResultsScreen()),
     );
 
     if (selectedPlace == null) return;
@@ -279,7 +290,7 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _changeRouteOrigin() async {
     final selectedOrigin = await Navigator.push<MapPlace>(
       context,
-      MaterialPageRoute(builder: (_) => const MapSearchResultsScreen()),
+      MaterialPageRoute(builder: (_) => _buildSearchResultsScreen()),
     );
 
     if (selectedOrigin == null) return;
@@ -294,7 +305,7 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _changeRouteDestination() async {
     final selectedDestination = await Navigator.push<MapPlace>(
       context,
-      MaterialPageRoute(builder: (_) => const MapSearchResultsScreen()),
+      MaterialPageRoute(builder: (_) => _buildSearchResultsScreen()),
     );
 
     if (selectedDestination == null) return;
@@ -551,10 +562,10 @@ class _MapScreenState extends State<MapScreen> {
             DraggableScrollableSheet(
               controller: _placeSheetController,
               initialChildSize: 0.42,
-minChildSize: 0.24,
-maxChildSize: 0.86,
-snap: true,
-snapSizes: const [0.24, 0.42, 0.86],
+              minChildSize: 0.24,
+              maxChildSize: 0.86,
+              snap: true,
+              snapSizes: const [0.24, 0.42, 0.86],
               builder: (context, scrollController) {
                 final place = _selectedPlace!;
                 final isStudentUniversity = _isStudentUniversityPlace(place);
@@ -600,161 +611,162 @@ snapSizes: const [0.24, 0.42, 0.86],
                           padding: EdgeInsets.zero,
                           children: [
                             Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 85,
-                            height: 85,
-                            decoration: BoxDecoration(
-                              color: AppColors.Tertiary,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Icon(
-                              Icons.location_on_outlined,
-                              size: 40,
-                              color: AppColors.PrimaryLighter,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  place.name,
-                                  style: AppTextStyles.Heading1.copyWith(
-                                    color: AppColors.Primary,
+                                Container(
+                                  width: 85,
+                                  height: 85,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.Tertiary,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Icon(
+                                    Icons.location_on_outlined,
+                                    size: 40,
+                                    color: AppColors.PrimaryLighter,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  place.category.replaceAll('_', ' '),
-                                  style: AppTextStyles.Body.copyWith(
-                                    color: AppColors.PrimaryLighter,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        place.name,
+                                        style: AppTextStyles.Heading1.copyWith(
+                                          color: AppColors.Primary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        place.category.replaceAll('_', ' '),
+                                        style: AppTextStyles.Body.copyWith(
+                                          color: AppColors.PrimaryLighter,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
-                      if (isStudentUniversity)
-                        Row(
-                          children: [
-                            Expanded(
-                              child: AppButton(
+                            if (isStudentUniversity)
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: AppButton(
+                                      text: 'Get Directions',
+                                      onPressed:
+                                          _loadDirectionsForSelectedPlace,
+                                      iconAsset: 'assets/icons/Send.svg',
+                                      fullWidth: true,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: AppButton(
+                                      text: 'Indoor Map',
+                                      onPressed: () {},
+                                      iconAsset: 'assets/icons/map.svg',
+                                      variant: AppButtonVariant.outline,
+                                      fullWidth: true,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else
+                              AppButton(
                                 text: 'Get Directions',
                                 onPressed: _loadDirectionsForSelectedPlace,
                                 iconAsset: 'assets/icons/Send.svg',
                                 fullWidth: true,
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
+
+                            const SizedBox(height: 16),
+
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(1.4),
                               child: AppButton(
-                                text: 'Indoor Map',
-                                onPressed: () {},
-                                iconAsset: 'assets/icons/map.svg',
-                                variant: AppButtonVariant.outline,
+                                text: 'Ask AI Assistant about this place',
+                                onPressed: () {
+                                  if (_selectedPlace == null) return;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          AIChatScreen(place: _selectedPlace!),
+                                    ),
+                                  );
+                                },
+                                iconAsset: 'assets/icons/ai.svg',
+                                variant: AppButtonVariant.gradientOutline,
                                 fullWidth: true,
                               ),
                             ),
-                          ],
-                        )
-                      else
-                        AppButton(
-                          text: 'Get Directions',
-                          onPressed: _loadDirectionsForSelectedPlace,
-                          iconAsset: 'assets/icons/Send.svg',
-                          fullWidth: true,
-                        ),
 
-                      const SizedBox(height: 16),
+                            const SizedBox(height: 28),
 
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(1.4),
-                        child: AppButton(
-                          text: 'Ask AI Assistant about this place',
-                          onPressed: () {
-                            if (_selectedPlace == null) return;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AIChatScreen(
-                                  place: _selectedPlace!,
-                                ),
+                            Text(
+                              'Accessibility Rating',
+                              style: AppTextStyles.Heading2.copyWith(
+                                color: AppColors.Primary,
                               ),
-                            );
-                          },
-                          iconAsset: 'assets/icons/ai.svg',
-                          variant: AppButtonVariant.gradientOutline,
-                          fullWidth: true,
-                        ),
-                      ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              '4.2/5  ★★★★★  (35 Ratings by users)',
+                              style: AppTextStyles.Body.copyWith(
+                                color: AppColors.Primary,
+                              ),
+                            ),
 
-                      const SizedBox(height: 28),
+                            const SizedBox(height: 28),
 
-                      Text(
-                        'Accessibility Rating',
-                        style: AppTextStyles.Heading2.copyWith(
-                          color: AppColors.Primary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        '4.2/5  ★★★★★  (35 Ratings by users)',
-                        style: AppTextStyles.Body.copyWith(
-                          color: AppColors.Primary,
-                        ),
-                      ),
+                            Text(
+                              'Accessibility Features',
+                              style: AppTextStyles.Heading2.copyWith(
+                                color: AppColors.Primary,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
 
-                      const SizedBox(height: 28),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: place.accessibilityTags
+                                  .map((tag) => AccessibilityTag(tag: tag))
+                                  .toList(),
+                            ),
 
-                      Text(
-                        'Accessibility Features',
-                        style: AppTextStyles.Heading2.copyWith(
-                          color: AppColors.Primary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
+                            const SizedBox(height: 28),
 
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: place.accessibilityTags
-                            .map((tag) => AccessibilityTag(tag: tag))
-                            .toList(),
-                      ),
+                            Text(
+                              'Details',
+                              style: AppTextStyles.Heading2.copyWith(
+                                color: AppColors.Primary,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
 
-                      const SizedBox(height: 28),
+                            PlaceProfileInfoCard(
+                              status: 'Open',
+                              address: place.sourceUrl,
+                              email: null,
+                              phone: null,
+                            ),
 
-                      Text(
-                        'Details',
-                        style: AppTextStyles.Heading2.copyWith(
-                          color: AppColors.Primary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
+                            const SizedBox(height: 24),
 
-                      PlaceProfileInfoCard(
-                        status: 'Open',
-                        address: place.sourceUrl,
-                        email: null,
-                        phone: null,
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      AppButton(
-                        text: 'Save This Location',
-                        onPressed: () {},
-                        iconAsset: 'assets/icons/save_black.svg',
-                        variant: AppButtonVariant.outline,
-                        fullWidth: true,
-                      ),
+                            AppButton(
+                              text: 'Save This Location',
+                              onPressed: () {},
+                              iconAsset: 'assets/icons/save_black.svg',
+                              variant: AppButtonVariant.outline,
+                              fullWidth: true,
+                            ),
 
                             const SizedBox(height: 120),
                           ],
@@ -766,29 +778,9 @@ snapSizes: const [0.24, 0.42, 0.86],
               },
             )
           else
-            MapResultsBottomSheet(
-              places: _places,
-              onGoPressed: (place) {
-                setState(() {
-                  _selectedPlace = place;
-                  _isPlaceSheetExpanded = false;
-                  _isShowingRouteResults = false;
-                  _isRouteSheetExpanded = false;
-                  _routes = [];
-                  _selectedRoute = null;
-                  _routeErrorMessage = null;
-                  _isLoadingRoutes = false;
-                  _polylines = {};
-                  _routeOriginPlace = null;
-                });
-
-                mapController?.animateCamera(
-                  CameraUpdate.newLatLngZoom(
-                    LatLng(place.latitude, place.longitude),
-                    17,
-                  ),
-                );
-              },
+            MainMapBottomSheet(
+              universityPlace: _mainUniversityPlace,
+              onUniversityGoPressed: _openDirectionsToUniversity,
             ),
         ],
       ),
@@ -891,5 +883,64 @@ snapSizes: const [0.24, 0.42, 0.86],
       _polylines = {};
       _routeOriginPlace = null;
     });
+  }
+
+  MapPlace get _fallbackUniversityPlace {
+    return MapPlace(
+      externalLocationId: -1,
+      name: 'ISCTE-IUL',
+      category: 'Public University',
+      latitude: 38.7478,
+      longitude: -9.1534,
+      source: 'fallback',
+      sourceUrl: null,
+      distanceMeters: 200,
+      rating: 4.2,
+      imageUrl: 'assets/images/iscte_iul.png',
+      accessibilityTags: const [],
+    );
+  }
+
+  MapPlace get _mainUniversityPlace {
+    final isctePlace = _places.where((place) {
+      final name = place.name.toLowerCase();
+      final category = place.category.toLowerCase();
+
+      return name.contains('iscte') ||
+          name.contains('instituto universitário') ||
+          category.contains('university');
+    }).toList();
+
+    if (isctePlace.isNotEmpty) {
+      return isctePlace.first;
+    }
+
+    return _fallbackUniversityPlace;
+  }
+
+  Future<void> _openDirectionsToUniversity() async {
+    final universityPlace = _mainUniversityPlace;
+
+    setState(() {
+      _selectedPlace = universityPlace;
+      _isPlaceSheetExpanded = false;
+      _isShowingRouteResults = false;
+      _isRouteSheetExpanded = false;
+      _routes = [];
+      _selectedRoute = null;
+      _routeErrorMessage = null;
+      _isLoadingRoutes = false;
+      _polylines = {};
+      _routeOriginPlace = null;
+    });
+
+    mapController?.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(universityPlace.latitude, universityPlace.longitude),
+        17,
+      ),
+    );
+
+    await _loadDirectionsForSelectedPlace();
   }
 }

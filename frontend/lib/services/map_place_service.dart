@@ -42,10 +42,16 @@ class MapPlaceService {
     return places.map((place) => MapPlace.fromJson(place)).toList();
   }
 
-  Future<List<MapPlace>> searchPlaces({required String query}) async {
+  Future<List<MapPlace>> searchPlaces({
+    required String query,
+    double? latitude,
+    double? longitude,
+  }) async {
     final uri = Uri.parse('$baseUrl/map/search').replace(
       queryParameters: {
         'query': query,
+        if (latitude != null) 'latitude': latitude.toString(),
+        if (longitude != null) 'longitude': longitude.toString(),
       },
     );
 
@@ -65,7 +71,6 @@ class MapPlaceService {
     }
 
     final data = jsonDecode(response.body);
-
     final places = data['places'] as List;
 
     return places.map((place) => MapPlace.fromJson(place)).toList();

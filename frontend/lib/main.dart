@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           }
 
           //return const LoginScreen();
-          return const LoginScreen();
+          return const MainShell();
         },
       ),
     );

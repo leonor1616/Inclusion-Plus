@@ -9,7 +9,14 @@ import '../../widgets/cards/map_search_result_card.dart';
 import '../../widgets/search_bar.dart';
 
 class MapSearchResultsScreen extends StatefulWidget {
-  const MapSearchResultsScreen({super.key});
+  final double? currentLatitude;
+  final double? currentLongitude;
+
+  const MapSearchResultsScreen({
+    super.key,
+    this.currentLatitude,
+    this.currentLongitude,
+  });
 
   @override
   State<MapSearchResultsScreen> createState() => _MapSearchResultsScreenState();
@@ -69,8 +76,13 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
     });
 
     try {
+      debugPrint(
+        'Search location: ${widget.currentLatitude}, ${widget.currentLongitude}',
+      );
       final results = await _mapPlaceService.searchPlaces(
         query: cleanQuery,
+        latitude: widget.currentLatitude,
+        longitude: widget.currentLongitude,
       );
 
       if (!mounted) return;
