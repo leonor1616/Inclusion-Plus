@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../screens/account/account_screen.dart';
+import '../theme/app_styles.dart';
 
 class AppHeader extends StatelessWidget {
   final String logoAsset;
   final bool showAccountButton;
   final VoidCallback? onAccountTap;
+  final String? avatarAsset;
+  final double horizontalPadding;
 
   const AppHeader({
     super.key,
     required this.logoAsset,
     this.showAccountButton = true,
     this.onAccountTap,
+    this.avatarAsset,
+    this.horizontalPadding = 24,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        24,
-        8,
-        24,
-        0,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: SizedBox(
-        height: 42,
+        height: 50,
         width: double.infinity,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,11 +32,10 @@ class AppHeader extends StatelessWidget {
           children: [
             SvgPicture.asset(
               logoAsset,
-              height: 22,
+              height: 30,
               fit: BoxFit.contain,
               semanticsLabel: 'Inclusion+ Logo',
             ),
-
             if (showAccountButton)
               Semantics(
                 button: true,
@@ -54,19 +53,31 @@ class AppHeader extends StatelessWidget {
                   child: Container(
                     width: 42,
                     height: 42,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFFE5E5E5),
+                      color: AppColors.Background,
                       border: Border.all(
-                        color: const Color(0xFF2B2B2B),
+                        color: AppColors.Primary,
                         width: 1,
                       ),
                     ),
-                    child: const Icon(
-                      Icons.person_outline,
-                      size: 22,
-                      color: Color(0xFF2B2B2B),
-                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: avatarAsset == null
+                        ? SvgPicture.asset(
+                            'assets/icons/person_filled.svg',
+                            width: 30,
+                            height: 30,
+                            fit: BoxFit.contain,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.Primary,
+                              BlendMode.srcIn,
+                            ),
+                          )
+                        : Image.asset(
+                            avatarAsset!,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               ),

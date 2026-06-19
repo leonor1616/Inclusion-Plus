@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/route_option_model.dart';
+import 'api_service.dart';
 
 class MapDirectionsService {
-  static const String baseUrl = String.fromEnvironment(
-  'API_BASE_URL',
-  defaultValue: 'http://localhost:3000',
-);
+  static String get baseUrl => ApiService.baseUrl;
   Future<List<RouteOption>> getDirections({
     required double originLat,
     required double originLng,

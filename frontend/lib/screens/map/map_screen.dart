@@ -4,8 +4,8 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../models/map_place_model.dart';
 import '../../services/map_place_service.dart';
+import '../../state/map_navigation_request.dart';
 import '../../theme/app_styles.dart';
-import '../../widgets/cards/map_results_bottom_sheet.dart';
 import '../../widgets/search_bar.dart';
 import 'search_results_screen.dart';
 
@@ -23,10 +23,11 @@ import '../../services/map_directions_service.dart';
 import '../../utils/polyline_decoder.dart';
 import '../../widgets/cards/route_results_bottom_sheet.dart';
 import 'ai_chat_screen.dart';
-import '../../widgets/buttons/app_back_button.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  final MapNavigationRequest? navigationRequest;
+
+  const MapScreen({super.key, this.navigationRequest});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -63,6 +64,7 @@ class _MapScreenState extends State<MapScreen> {
 
   MapPlace? _selectedPlace;
   bool _isPlaceSheetExpanded = false;
+  int? _handledNavigationRequestId;
 
   static const LatLng initialPosition = LatLng(38.7477, -9.1530);
 
@@ -112,12 +114,13 @@ class _MapScreenState extends State<MapScreen> {
     return _selectedPlace?.name ?? 'Destination';
   }
 
-  MapSearchResultsScreen _buildSearchResultsScreen() {
+  MapSearchResultsScreen _buildSearchResultsScreen({String? initialQuery}) {
     final searchOrigin = _userPosition ?? initialPosition;
 
     return MapSearchResultsScreen(
       currentLatitude: searchOrigin.latitude,
       currentLongitude: searchOrigin.longitude,
+      initialQuery: initialQuery,
     );
   }
 
@@ -181,6 +184,77 @@ class _MapScreenState extends State<MapScreen> {
     _loadUserLocation();
     _placeSheetController.addListener(_handlePlaceSheetSizeChanged);
     _routeSheetController.addListener(_handleRouteSheetSizeChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handlePendingNavigationRequest();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant MapScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.navigationRequest?.id != widget.navigationRequest?.id) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _handlePendingNavigationRequest();
+      });
+    }
+  }
+
+  Future<void> _handlePendingNavigationRequest() async {
+    final request = widget.navigationRequest;
+
+    if (!mounted || request == null) return;
+    if (_handledNavigationRequestId == request.id) return;
+
+    _handledNavigationRequestId = request.id;
+
+    switch (request.mode) {
+      case MapNavigationMode.overview:
+        _clearSelectedPlace();
+        return;
+      case MapNavigationMode.search:
+        _clearSelectedPlace();
+        await _openSearch(initialQuery: request.searchQuery);
+        return;
+      case MapNavigationMode.showPlace:
+        final place = request.place;
+        if (place == null) return;
+
+        _showPlaceOnMap(place);
+        return;
+      case MapNavigationMode.directionsToPlace:
+        final place = request.place;
+        if (place == null) return;
+
+        _showPlaceOnMap(place);
+        await _loadDirectionsForSelectedPlace();
+        return;
+    }
+  }
+
+  void _showPlaceOnMap(MapPlace place) {
+    setState(() {
+      _selectedPlace = place;
+      _isPlaceSheetExpanded = false;
+      _isShowingRouteResults = false;
+      _isRouteSheetExpanded = false;
+      _routes = [];
+      _selectedRoute = null;
+      _routeErrorMessage = null;
+      _isLoadingRoutes = false;
+      _polylines = {};
+      _routeOriginPlace = null;
+      _routeDestinationOverridePosition = null;
+      _routeDestinationOverrideLabel = null;
+    });
+
+    mapController?.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(place.latitude, place.longitude),
+        17,
+      ),
+    );
   }
 
   Future<void> _loadUserLocation() async {
@@ -266,10 +340,12 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _openSearch() async {
+  Future<void> _openSearch({String? initialQuery}) async {
     final selectedPlace = await Navigator.push<MapPlace>(
       context,
-      MaterialPageRoute(builder: (_) => _buildSearchResultsScreen()),
+      MaterialPageRoute(
+        builder: (_) => _buildSearchResultsScreen(initialQuery: initialQuery),
+      ),
     );
 
     if (selectedPlace == null) return;
@@ -399,6 +475,8 @@ class _MapScreenState extends State<MapScreen> {
       _isLoadingRoutes = false;
       _polylines = {};
       _routeOriginPlace = null;
+      _routeDestinationOverridePosition = null;
+      _routeDestinationOverrideLabel = null;
     });
 
     mapController?.animateCamera(CameraUpdate.newLatLngZoom(_routeOrigin, 16));
@@ -527,7 +605,7 @@ class _MapScreenState extends State<MapScreen> {
                             hintText: searchText,
                             variant: AppSearchBarVariant.filled,
                             readOnly: true,
-                            onTap: _openSearch,
+                            onTap: () => _openSearch(),
                           ),
                         ),
                       ],
@@ -882,6 +960,8 @@ class _MapScreenState extends State<MapScreen> {
       _isLoadingRoutes = false;
       _polylines = {};
       _routeOriginPlace = null;
+      _routeDestinationOverridePosition = null;
+      _routeDestinationOverrideLabel = null;
     });
   }
 
@@ -896,7 +976,7 @@ class _MapScreenState extends State<MapScreen> {
       sourceUrl: null,
       distanceMeters: 200,
       rating: 4.2,
-      imageUrl: 'assets/images/iscte_iul.png',
+      imageUrl: 'assets/images/iscte_building_wide.png',
       accessibilityTags: const [],
     );
   }
@@ -932,6 +1012,8 @@ class _MapScreenState extends State<MapScreen> {
       _isLoadingRoutes = false;
       _polylines = {};
       _routeOriginPlace = null;
+      _routeDestinationOverridePosition = null;
+      _routeDestinationOverrideLabel = null;
     });
 
     mapController?.animateCamera(

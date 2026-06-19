@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/home/home.dart';
-
 import 'package:provider/provider.dart';
 
+import 'navigation/auth_gate.dart';
 import 'state/auth_provider.dart';
 import 'theme/app_theme.dart';
-import 'screens/auth/login_screen.dart';
-//import 'screens/home/home.dart';
-import 'screens/test_screen.dart';
-import 'screens/main/main_shell.dart';
+import 'widgets/phone_viewport.dart';
 
-
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-    
-
+void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => AuthProvider(),
@@ -33,18 +24,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Inclusion+',
       theme: AppTheme.lightTheme,
-
-      home: Consumer<AuthProvider>(
-        builder: (context, auth, child) {
-          if (auth.isAuthenticated) {
-            //return const HomeScreen();
-            return const MainShell();
-          }
-
-          //return const LoginScreen();
-          return const MainShell();
-        },
+      builder: (context, child) => PhoneViewport(
+        child: child ?? const SizedBox.shrink(),
       ),
+      home: const AuthGate(),
     );
   }
 }

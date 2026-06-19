@@ -9,7 +9,7 @@ class AppNavItems {
     ),
     AppNavItem(
       label: 'Map',
-      iconAsset: 'assets/icons/map.svg',
+      iconAsset: 'assets/icons/map_primary.svg',
       selectedIconAsset: 'assets/icons/map_filled.svg',
     ),
     AppNavItem(

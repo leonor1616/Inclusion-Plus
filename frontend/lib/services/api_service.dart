@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import '../models/country_model.dart';
 
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 class ApiException implements Exception {
   final String message;
@@ -20,35 +19,18 @@ class ApiException implements Exception {
 // trocar isto para que chame a api baseada em ip atual
 class ApiService {
   static String get baseUrl {
-  const envUrl = String.fromEnvironment('API_BASE_URL');
+    const envUrl = String.fromEnvironment('API_BASE_URL');
 
-  if (envUrl.isNotEmpty) {
-    return envUrl;
+    if (envUrl.isNotEmpty) {
+      return envUrl;
+    }
+
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:3000';
+    }
+
+    return 'http://localhost:3000';
   }
-
-  if (kIsWeb) {
-    return String.fromEnvironment(
-  'API_BASE_URL',
-  defaultValue: 'http://localhost:3000',
-);
-  }
-
-  if (Platform.isAndroid) {
-    return 'http://10.0.2.2:3000';
-  }
-
-  if (Platform.isIOS) {
-    return String.fromEnvironment(
-  'API_BASE_URL',
-  defaultValue: 'http://localhost:3000',
-);
-  }
-
-  return String.fromEnvironment(
-  'API_BASE_URL',
-  defaultValue: 'http://localhost:3000',
-);
-}
 
   static Map<String, String> _headers({String? token}) {
     return {
@@ -69,6 +51,34 @@ class ApiService {
         : 'Request failed';
 
     throw ApiException(message, statusCode: response.statusCode);
+  }
+
+
+  static Future<UserModel> register({
+    required String email,
+    required String password,
+    required String fullName,
+    String accountType = 'normal',
+    int? universityId,
+    String? countryCode,
+    String? city,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/register'),
+      headers: _headers(),
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'full_name': fullName,
+        'account_type': accountType,
+        'university_id': universityId,
+        'country_code': countryCode,
+        'city': city,
+      }),
+    );
+
+    final data = _decodeResponse(response);
+    return UserModel.fromJson(data as Map<String, dynamic>);
   }
 
   static Future<Map<String, dynamic>> login({
@@ -117,4 +127,113 @@ class ApiService {
         .map((item) => CountryModel.fromJson(item as Map<String, dynamic>))
         .toList();
   }
+
+  static Future<Map<String, dynamic>> createHelpRequest({
+    required String token,
+    required int incampusUniversityLocationId,
+    required String requestType,
+    required String urgencyLevel,
+    String? message,
+    String? scheduledFor,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/help-requests'),
+      headers: _headers(token: token),
+      body: jsonEncode({
+        'incampus_university_location_id': incampusUniversityLocationId,
+        'request_type': requestType,
+        'message': message,
+        'urgency_level': urgencyLevel,
+        'scheduled_for': scheduledFor,
+      }),
+    );
+
+    final data = _decodeResponse(response);
+    return data as Map<String, dynamic>;
+  }
+
+
+  static Future<List<dynamic>> fetchCommunityPosts({
+    required String token,
+    String? postType,
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final query = <String, String>{
+      'limit': limit.toString(),
+      'offset': offset.toString(),
+      if (postType != null && postType.isNotEmpty) 'type': postType,
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/posts').replace(queryParameters: query),
+      headers: _headers(token: token),
+    );
+
+    final data = _decodeResponse(response);
+    if (data is Map && data['data'] is List) {
+      return data['data'] as List<dynamic>;
+    }
+    if (data is List) {
+      return data;
+    }
+    return <dynamic>[];
+  }
+
+  static Future<Map<String, dynamic>> createCommunityPost({
+    required String token,
+    required String postType,
+    required String content,
+    int? rating,
+    String? imageUrl,
+    int? incampusUniversityLocationId = 1,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/posts'),
+      headers: _headers(token: token),
+      body: jsonEncode({
+        'incampus_university_location_id': incampusUniversityLocationId,
+        'external_location_id': null,
+        'post_type': postType,
+        'content': content,
+        'rating': rating,
+        'image_url': imageUrl,
+      }),
+    );
+
+    final data = _decodeResponse(response);
+    return data as Map<String, dynamic>;
+  }
+
+  static Future<List<dynamic>> fetchPostComments({
+    required String token,
+    required int postId,
+  }) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/posts/$postId/comments'),
+      headers: _headers(token: token),
+    );
+
+    final data = _decodeResponse(response);
+    if (data is List) {
+      return data;
+    }
+    return <dynamic>[];
+  }
+
+  static Future<Map<String, dynamic>> createPostComment({
+    required String token,
+    required int postId,
+    required String content,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/posts/$postId/comments'),
+      headers: _headers(token: token),
+      body: jsonEncode({'content': content}),
+    );
+
+    final data = _decodeResponse(response);
+    return data as Map<String, dynamic>;
+  }
+
 }
