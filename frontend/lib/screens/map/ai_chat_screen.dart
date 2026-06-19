@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../models/map_place_model.dart';
-import '../../services/gemini_service.dart';
 import '../../theme/app_styles.dart';
 
 class AIChatScreen extends StatefulWidget {
@@ -14,24 +13,8 @@ class AIChatScreen extends StatefulWidget {
 }
 
 class _AIChatScreenState extends State<AIChatScreen> {
-  final GeminiService _geminiService = GeminiService();
-  String? _response;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadAIResponse();
-  }
-
-  Future<void> _loadAIResponse() async {
-    final response = await _geminiService.getPlaceSummary(widget.place);
-    if (mounted) {
-      setState(() {
-        _response = response;
-        _isLoading = false;
-      });
-    }
+  String get _placeholderResponse {
+    return 'I can help you understand the accessibility conditions for this place. For now this is a placeholder response until the AI service is connected.';
   }
 
   @override
@@ -127,24 +110,14 @@ class _AIChatScreenState extends State<AIChatScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    if (_isLoading)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 32),
-                          child: CircularProgressIndicator(
-                            color: AppColors.Accent,
-                          ),
-                        ),
-                      )
-                    else
-                      Text(
-                        _response ?? '',
-                        textAlign: TextAlign.justify,
-                        style: AppTextStyles.Body.copyWith(
-                          color: AppColors.Primary,
-                          height: 1.6,
-                        ),
+                    Text(
+                      _placeholderResponse,
+                      textAlign: TextAlign.justify,
+                      style: AppTextStyles.Body.copyWith(
+                        color: AppColors.Primary,
+                        height: 1.6,
                       ),
+                    ),
                   ],
                 ),
               ),

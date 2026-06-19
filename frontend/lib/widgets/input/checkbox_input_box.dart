@@ -27,16 +27,14 @@ class CheckboxInputBox extends StatelessWidget {
       label: label,
       child: GestureDetector(
         onTap: () => onChanged(!value),
+        behavior: HitTestBehavior.opaque,
         child: Container(
           width: double.infinity,
           height: 60,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
             color: AppColors.Tertiary,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x26000000),
@@ -46,30 +44,38 @@ class CheckboxInputBox extends StatelessWidget {
             ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  if (iconAsset != null) ...[
-                    SvgPicture.asset(
-                      iconAsset!,
-                      width: 30,
-                      height: 30,
-                      colorFilter: iconColor != null
-                          ? ColorFilter.mode(
-                              iconColor!,
-                              BlendMode.srcIn,
-                            )
-                          : null,
-                    ),
-                    const SizedBox(width: 16),
-                  ],
-                  Text(
-                    label,
-                    style: AppTextStyles.BodyMedium,
+              if (iconAsset != null) ...[
+                SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: SvgPicture.asset(
+                    iconAsset!,
+                    key: ValueKey(iconAsset),
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                    colorFilter: iconColor != null
+                        ? ColorFilter.mode(
+                            iconColor!,
+                            BlendMode.srcIn,
+                          )
+                        : null,
                   ),
-                ],
+                ),
+                const SizedBox(width: 16),
+              ],
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.TinyBodyBold.copyWith(
+                    height: 1.2,
+                  ),
+                ),
               ),
+              const SizedBox(width: 16),
               Container(
                 width: 28,
                 height: 28,
@@ -84,7 +90,7 @@ class CheckboxInputBox extends StatelessWidget {
                 child: value
                     ? const Icon(
                         Icons.check,
-                        size: 24,
+                        size: 22,
                         color: AppColors.Accent,
                       )
                     : null,
@@ -96,29 +102,3 @@ class CheckboxInputBox extends StatelessWidget {
     );
   }
 }
-
-//uso sem ícone
-
-/* CheckboxInputBox(
-  label: 'System Settings',
-  value: systemSettingsSelected,
-  onChanged: (newValue) {
-    setState(() {
-      systemSettingsSelected = newValue;
-    });
-  },
-), */
-
-//uso com ícone
-
-/*CheckboxInputBox(
-  label: 'Light Mode',
-  iconAsset: 'assets/icons/light_mode.svg',
-  iconColor: AppColors.Accent,
-  value: lightModeSelected,
-  onChanged: (newValue) {
-    setState(() {
-      lightModeSelected = newValue;
-    });
-  },
-),*/

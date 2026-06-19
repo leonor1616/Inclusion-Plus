@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import '../models/map_place_model.dart';
+import 'api_service.dart';
 
 class MapPlaceService {
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://localhost:3000',
-  );
+  static String get baseUrl => ApiService.baseUrl;
 
   Future<List<MapPlace>> getPlaces({
     required double latitude,
@@ -59,10 +57,6 @@ class MapPlaceService {
       uri,
       headers: {'Content-Type': 'application/json'},
     );
-
-    debugPrint('SEARCH URL: $uri');
-    debugPrint('SEARCH STATUS: ${response.statusCode}');
-    debugPrint('SEARCH BODY: ${response.body}');
 
     if (response.statusCode != 200) {
       throw Exception(

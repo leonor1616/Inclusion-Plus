@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_styles.dart';
 
@@ -38,12 +39,12 @@ class AppSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: _backgroundColor,
-      borderRadius: BorderRadius.circular(40),
-      child: InkWell(
+    return Semantics(
+      textField: true,
+      label: hintText,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        borderRadius: BorderRadius.circular(40),
         child: Container(
           height: 50,
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -53,10 +54,14 @@ class AppSearchBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.search,
-                size: 22,
-                color: AppColors.Primary,
+              SvgPicture.asset(
+                'assets/icons/search.svg',
+                width: 22,
+                height: 22,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.Primary,
+                  BlendMode.srcIn,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -80,10 +85,15 @@ class AppSearchBar extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(
-                Icons.mic_none,
-                size: 24,
-                color: AppColors.PrimaryLighter,
+              SvgPicture.asset(
+                'assets/icons/mic_rounded.svg',
+                width: 24,
+                height: 24,
+                fit: BoxFit.contain,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.Primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ],
           ),
