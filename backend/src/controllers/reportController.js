@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Reports can target an in-campus location, elevator, or external location.
+// The database constraint requires at least one of those targets to be present.
 exports.createReport = async (req, res) => {
   const {
     incampus_university_location_id,

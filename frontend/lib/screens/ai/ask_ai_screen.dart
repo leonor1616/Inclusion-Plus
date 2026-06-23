@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/app_styles.dart';
 
 class AskAiScreen extends StatefulWidget {
+  // Standalone assistant prototype. It can ask MainShell to open a quiet route
+  // on the map, but it does not call the backend AI endpoint.
   final VoidCallback? onOpenQuietRoute;
 
   const AskAiScreen({super.key, this.onOpenQuietRoute});

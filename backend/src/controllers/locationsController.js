@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// In-campus location endpoints return university-controlled places and their
+// accessibility/elevator metadata.
 exports.getLocations = async (req, res) => {
   try {
     const result = await pool.query(
@@ -38,6 +40,8 @@ exports.getLocationById = async (req, res) => {
       return res.status(404).json({ error: 'Location not found' });
     }
 
+    // Detail response aggregates the location with its accessibility features
+    // and elevators so the frontend can render a complete place profile.
     const featuresResult = await pool.query(
       `SELECT
         lf.id,

@@ -17,6 +17,7 @@ class _AuthGateState extends State<AuthGate> {
   void initState() {
     super.initState();
 
+    // Session loading is deferred until after build context is available.
     Future.microtask(() {
       if (mounted) {
         context.read<AuthProvider>().loadSession();
@@ -29,6 +30,7 @@ class _AuthGateState extends State<AuthGate> {
     final auth = context.watch<AuthProvider>();
 
     if (auth.isLoadingSession) {
+      // Prevents a flash of the login screen while SharedPreferences is checked.
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );

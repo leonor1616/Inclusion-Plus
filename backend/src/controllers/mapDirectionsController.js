@@ -1,5 +1,6 @@
 const googleRoutesService = require('../services/googleRoutesService');
 
+// Lightweight directions endpoint used by the Flutter route bottom sheet.
 exports.getDirections = async (req, res) => {
   const {
     originLat,

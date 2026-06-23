@@ -69,6 +69,8 @@ class CommunityPost {
 class CommunityPostStore extends ChangeNotifier {
   CommunityPostStore._();
 
+  // Singleton store keeps community data alive while navigating between the
+  // feed, create post screen, and post detail screen.
   static final CommunityPostStore instance = CommunityPostStore._();
 
   int _nextLocalId = 1000;
@@ -134,6 +136,8 @@ class CommunityPostStore extends ChangeNotifier {
 
     if (token != null && token.isNotEmpty) {
       try {
+        // Persist to the backend when available, but keep the optimistic local
+        // post so the prototype remains usable offline/during backend failures.
         await ApiService.createCommunityPost(
           token: token,
           postType: tag.toLowerCase(),
@@ -175,6 +179,7 @@ class CommunityPostStore extends ChangeNotifier {
 
     if (token != null && token.isNotEmpty && postId < 1000) {
       try {
+        // Only backend-backed posts have ids below the local prototype range.
         await ApiService.createPostComment(
           token: token,
           postId: postId,
@@ -215,6 +220,8 @@ class CommunityPostStore extends ChangeNotifier {
   }
 
   CommunityPost? _fromBackend(Map<String, dynamic> json) {
+    // Maps the backend post schema into the UI model. Currently unused because
+    // loadBackendPosts intentionally keeps the prototype feed local.
     final postType = json['post_type']?.toString();
     if (postType == null) return null;
 

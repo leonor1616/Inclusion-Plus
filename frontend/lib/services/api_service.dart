@@ -21,10 +21,14 @@ class ApiService {
   static String get baseUrl {
     const envUrl = String.fromEnvironment('API_BASE_URL');
 
+    // Allows production builds to inject the backend URL at compile time with
+    // --dart-define=API_BASE_URL=...
     if (envUrl.isNotEmpty) {
       return envUrl;
     }
 
+    // Android emulators cannot reach the host through localhost; 10.0.2.2 maps
+    // to the development machine running the backend.
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:3000';
     }
@@ -46,6 +50,8 @@ class ApiService {
       return data;
     }
 
+    // Backend errors consistently use { error: "..." }; convert them into a
+    // typed exception so screens/providers can display friendly messages.
     final message = data is Map && data['error'] != null
         ? data['error'].toString()
         : 'Request failed';
@@ -188,6 +194,8 @@ class ApiService {
     String? imageUrl,
     int? incampusUniversityLocationId = 1,
   }) async {
+    // The community UI currently passes a default in-campus location when the
+    // user has not linked a real place to the post.
     final response = await http.post(
       Uri.parse('$baseUrl/posts'),
       headers: _headers(token: token),

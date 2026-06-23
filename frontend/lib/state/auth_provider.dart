@@ -7,6 +7,8 @@ import '../services/api_service.dart';
 class AuthProvider extends ChangeNotifier {
   static const String _tokenKey = 'auth_token';
 
+  // Holds the current JWT and user profile in memory; the token is also stored
+  // in SharedPreferences so the session can survive app restarts.
   String? _token;
   UserModel? _user;
   bool _isLoading = false;
@@ -33,6 +35,7 @@ class AuthProvider extends ChangeNotifier {
         _token = savedToken;
 
         try {
+          // Validate the saved token with the backend before trusting it.
           _user = await ApiService.getMe(token: savedToken);
         } catch (_) {
           await prefs.remove(_tokenKey);
@@ -70,6 +73,8 @@ class AuthProvider extends ChangeNotifier {
         throw ApiException('Token not received from server');
       }
 
+      // After login, fetch /me so the app state has the normalized user model
+      // returned by the backend instead of relying on the login payload.
       _token = receivedToken.toString();
       _user = await ApiService.getMe(token: _token!);
 
@@ -110,6 +115,8 @@ class AuthProvider extends ChangeNotifier {
         city: city,
       );
 
+      // Registration does not automatically return a token, so the provider
+      // immediately logs in with the same credentials.
       final loginData = await ApiService.login(
         email: email,
         password: password,

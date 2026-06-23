@@ -8,6 +8,8 @@ import '../../widgets/search_bar.dart';
 import '../alerts/city_alerts_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  // Home is callback-driven: MainShell decides whether an action switches tabs,
+  // pushes a screen, or sends a command to the map.
   final VoidCallback? onPlanRoute;
   final VoidCallback? onReportIssue;
   final VoidCallback? onRequestHelp;

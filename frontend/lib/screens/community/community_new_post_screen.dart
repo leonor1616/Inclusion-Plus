@@ -46,6 +46,7 @@ class _CommunityNewPostScreenState extends State<CommunityNewPostScreen> {
   }
 
   Future<void> _selectLocation() async {
+    // Location linking uses the same map search experience as route planning.
     final place = await Navigator.push<MapPlace>(
       context,
       MaterialPageRoute(
@@ -74,6 +75,8 @@ class _CommunityNewPostScreenState extends State<CommunityNewPostScreen> {
 
     final auth = context.read<AuthProvider>();
     final authorName = auth.user?.fullName?.trim();
+    // The store handles both local optimistic insertion and optional backend
+    // persistence when a token is available.
     await CommunityPostStore.instance.createPost(
       tag: _selectedTag,
       content: _descriptionController.text,

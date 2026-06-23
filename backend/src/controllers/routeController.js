@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+// Legacy/protected route calculation endpoint. The frontend currently uses
+// /map/directions, but this endpoint still computes a single Google route.
 exports.calculateRoute = async (req, res) => {
   const { origin, destination, travel_mode } = req.body;
 

@@ -50,6 +50,8 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
   }
 
   void _submitReport() {
+    // Currently this screen only updates local UI state. The backend /reports
+    // endpoint exists, but this form is not wired to it yet.
     setState(() {
       _selectedIssueType ??= 'Elevators / Lifts';
       _submittedAt = DateTime.now();
@@ -58,6 +60,8 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
   }
 
   Future<void> _openLocationSelector() async {
+    // Reuses map search so report locations share the same place model as the
+    // map and community modules.
     final place = await Navigator.push<MapPlace>(
       context,
       MaterialPageRoute(

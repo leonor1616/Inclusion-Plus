@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Campus alerts describe university-side warnings and can optionally be linked
+// to an in-campus location.
 exports.getCampusAlerts = async (req, res) => {
   try {
     const result = await pool.query(

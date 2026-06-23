@@ -8,6 +8,8 @@ const accessibilityCloudService =
 const externalLocationService =
   require('../services/externalLocationService');
 
+// Administrative/exploratory external location endpoints for reading or
+// refreshing the cached Accessibility Cloud data.
 exports.getCachedExternalLocations =
   async (req, res) => {
 

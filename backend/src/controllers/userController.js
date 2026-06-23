@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// User account endpoints expose profile fields from the "user" table without
+// leaking password_hash to the frontend.
 exports.getMe = async (req, res) => {
   try {
     const result = await pool.query(

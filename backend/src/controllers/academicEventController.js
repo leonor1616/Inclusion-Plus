@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Academic events are user-scoped schedule items that can optionally reference
+// in-campus locations.
 exports.getAcademicEvents = async (req, res) => {
   try {
     const result = await pool.query(

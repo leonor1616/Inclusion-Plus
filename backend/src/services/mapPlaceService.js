@@ -5,6 +5,8 @@ const placeMergeService = require('./placeMergeService');
 
 const MIN_RESULTS = 20;
 
+// Main map aggregation service: read nearby cached places first, then enrich
+// the cache from external providers if the local result set is too small.
 async function getMapPlaces(latitude, longitude, radius = 1000) {
     let cachedPlaces = await externalLocationService.getNearbyCachedLocations(
         latitude,
@@ -13,6 +15,8 @@ async function getMapPlaces(latitude, longitude, radius = 1000) {
     );
 
     if (cachedPlaces.length < MIN_RESULTS) {
+        // Providers are merged before persisting so duplicates from different
+        // sources do not flood the map with repeated markers.
         const accessibilityCloudPlaces =
             await accessibilityCloudService.fetchPlaces(
                 latitude,

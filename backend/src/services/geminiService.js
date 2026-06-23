@@ -16,6 +16,8 @@ async function generatePlaceSummary({ placeName, category, accessibilityTags }) 
       ? accessibilityTags.join(', ')
       : 'No specific accessibility features available';
 
+  // The prompt is intentionally constrained so the mobile UI receives a short,
+  // visit-oriented accessibility summary instead of a generic place description.
   const prompt = `
 Act as an assistant specialized in urban accessibility.
 
@@ -52,6 +54,8 @@ If accessibility information is limited, clearly state what is known and recomme
   const data = await response.json();
 
   if (!response.ok) {
+    // Surface the provider error message when available; it is more useful than
+    // returning a generic 500 to the route handler logs.
     const errorMessage =
       data?.error?.message ||
       data?.error?.status ||
@@ -60,6 +64,8 @@ If accessibility information is limited, clearly state what is known and recomme
     throw new Error(errorMessage);
   }
 
+  // Gemini responses can contain multiple text parts; join only populated parts
+  // so the API route always returns one clean string.
   const text = data?.candidates?.[0]?.content?.parts
     ?.map((part) => part.text)
     .filter(Boolean)

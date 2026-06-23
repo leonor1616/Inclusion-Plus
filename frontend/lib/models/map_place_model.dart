@@ -1,6 +1,8 @@
 import 'accessibility_tag_model.dart';
 
 class MapPlace {
+  // UI model used by maps, search results, reports, community location linking,
+  // route planning, and AI place summaries.
   final int externalLocationId;
   final String name;
   final String category;
@@ -88,6 +90,8 @@ List<AccessibilityTagModel> _mapAccessibilityTags(
 ) {
   final raw = json['raw_accessibility_data'];
 
+  // Accessibility tags are derived from provider-specific raw data when the
+  // backend includes it in the external location response.
   if (raw == null || raw is! Map<String, dynamic>) {
     return [];
   }

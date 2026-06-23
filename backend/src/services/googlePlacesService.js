@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+// Normalizes Google Places API objects into the same external_location shape
+// used by Accessibility Cloud and the map cache.
 function normalizeGooglePlace(place) {
   const location = place.location || {};
 
@@ -16,6 +18,7 @@ function normalizeGooglePlace(place) {
 }
 
 async function fetchPlaces(latitude, longitude, radius = 1000) {
+  // Nearby search powers the first map load around the user's/campus position.
   const response = await axios.post(
     'https://places.googleapis.com/v1/places:searchNearby',
     {
@@ -46,6 +49,7 @@ async function fetchPlaces(latitude, longitude, radius = 1000) {
 }
 
 async function searchPlacesByText(query) {
+  // Text search is used as a fallback when the local cache has too few matches.
   const response = await axios.post(
     'https://places.googleapis.com/v1/places:searchText',
     {

@@ -13,6 +13,8 @@ function normalizeCategory(category) {
         .trim();
 }
 
+// Some transport points can be very close and similarly named, but should stay
+// separate because they represent distinct stops/stations.
 function isNonMergeableCategory(category) {
     const nonMergeableCategories = [
         'subway_station',
@@ -125,6 +127,7 @@ function arePossibleDuplicates(placeA, placeB) {
 
     const distance = getDistanceMeters(placeA, placeB);
 
+    // A strict distance threshold reduces false merges between nearby venues.
     return distance <= 50;
 }
 
@@ -136,6 +139,8 @@ function mergePlaces(primary, secondary) {
     let extra = secondary;
 
     if (!primaryHasAccessibility && secondaryHasAccessibility) {
+        // Prefer the record carrying accessibility metadata, because the mobile
+        // UI derives tags and AI context from this payload.
         base = secondary;
         extra = primary;
     }

@@ -8,6 +8,8 @@ import 'api_service.dart';
 class GeminiService {
   static String get baseUrl => ApiService.baseUrl;
 
+  // Requests a concise accessibility-oriented summary for the selected place.
+  // The backend owns the Gemini API key and prompt construction.
   Future<String> getPlaceSummary(MapPlace place) async {
     final response = await http.post(
       Uri.parse('$baseUrl/ai/place-summary'),

@@ -1,4 +1,5 @@
 class UserModel {
+  // Mirrors the safe user fields returned by /me and auth endpoints.
   final int id;
   final String email;
   final String? fullName;

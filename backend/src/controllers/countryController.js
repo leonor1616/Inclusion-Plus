@@ -1,5 +1,6 @@
 const pool = require('../db');
 
+// Public lookup used during onboarding/registration country selection.
 exports.searchCountries = async (req, res) => {
   const search = req.query.search || '';
 

@@ -1,6 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 
+// Multer stores user-uploaded images on local disk. The generated filename
+// avoids collisions while preserving the original file extension.
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');

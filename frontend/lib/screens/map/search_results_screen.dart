@@ -66,6 +66,7 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
   void _onSearchChanged(String query) {
     _debounce?.cancel();
 
+    // Debounce avoids issuing a backend search request for every keystroke.
     _debounce = Timer(const Duration(milliseconds: 350), () {
       _search(query);
     });
@@ -120,6 +121,7 @@ class _MapSearchResultsScreenState extends State<MapSearchResultsScreen> {
   }
 
   void _selectPlace(MapPlace place) {
+    // Search returns the selected place to the caller through Navigator.pop.
     setState(() {
       _recentPlaces.removeWhere(
         (recentPlace) =>

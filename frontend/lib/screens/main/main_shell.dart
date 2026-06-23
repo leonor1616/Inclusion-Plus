@@ -36,6 +36,8 @@ class _MainShellState extends State<MainShell> {
   }
 
   void _openMap(MapNavigationRequest request) {
+    // Other tabs use this helper to switch to the map and pass a one-shot
+    // command such as search, show place, or calculate directions.
     setState(() {
       _mapRequest = request;
       selectedIndex = 1;
@@ -133,6 +135,8 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    // IndexedStack preserves each tab state, which is important for map camera,
+    // search state, and community feed data.
     final pages = [
       HomeScreen(
         onPlanRoute: () => _openMapSearch(),

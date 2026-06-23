@@ -2,6 +2,7 @@ const pool = require('../db');
 const mapPlaceService = require('../services/mapPlaceService');
 const googlePlacesService = require('../services/googlePlacesService');
 
+// Map endpoints expose cached/merged external locations to the Flutter map.
 exports.getMapPlaces = async (req, res) => {
     const { latitude, longitude, radius = 1000 } = req.query;
 
@@ -105,6 +106,8 @@ exports.searchMapPlaces = async (req, res) => {
     const searchPatterns = searchTerms.map((term) => `%${term}%`);
     const fullSearchPattern = `%${normalizedQuery}%`;
 
+    // Search first uses the local external_location cache; Google Places is
+    // queried only when the cache cannot satisfy the search well enough.
     const searchSql = `
     SELECT
       id AS external_location_id,

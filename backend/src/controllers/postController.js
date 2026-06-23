@@ -4,6 +4,8 @@ const ALLOWED_POST_TYPES = ['review', 'advice', 'question'];
 const DEFAULT_POST_LIMIT = 20;
 const MAX_POST_LIMIT = 50;
 
+// Community content currently supports three post categories reflected in both
+// database checks and Flutter UI filters.
 function parsePositiveInt(value, fallback) {
   const parsed = Number.parseInt(value, 10);
   return Number.isNaN(parsed) || parsed < 0 ? fallback : parsed;
@@ -70,6 +72,8 @@ exports.getPosts = async (req, res) => {
   }
 
   try {
+    // The feed query enriches posts with author, location and comment count so
+    // the client does not need extra requests for each card.
     const result = await pool.query(
       `SELECT
           p.id,

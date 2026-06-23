@@ -7,6 +7,8 @@ import 'api_service.dart';
 
 class MapDirectionsService {
   static String get baseUrl => ApiService.baseUrl;
+  // Delegates route calculation to the backend so API keys and provider-specific
+  // formatting stay outside the Flutter client.
   Future<List<RouteOption>> getDirections({
     required double originLat,
     required double originLng,

@@ -1,6 +1,8 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PolylineDecoder {
+  // Decodes Google's encoded polyline format into LatLng points for the
+  // GoogleMap Polyline overlay.
   static List<LatLng> decode(String encoded) {
     final points = <LatLng>[];
 

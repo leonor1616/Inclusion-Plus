@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Elevator status is stored separately from locations so outages can be updated
+// without changing the underlying campus place record.
 exports.getElevators = async (req, res) => {
   try {
     const result = await pool.query(

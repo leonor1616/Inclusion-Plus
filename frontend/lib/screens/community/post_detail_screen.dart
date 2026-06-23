@@ -32,6 +32,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
     final auth = context.read<AuthProvider>();
     final authorName = auth.user?.fullName?.trim();
+    // Comments are appended locally immediately; backend persistence is best
+    // effort for posts that came from the backend.
     await _store.addComment(
       postId: widget.postId,
       content: text,

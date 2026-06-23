@@ -7,6 +7,7 @@ import 'api_service.dart';
 class MapPlaceService {
   static String get baseUrl => ApiService.baseUrl;
 
+  // Loads nearby map places from the backend cache/aggregation endpoint.
   Future<List<MapPlace>> getPlaces({
     required double latitude,
     required double longitude,
@@ -45,6 +46,8 @@ class MapPlaceService {
     double? latitude,
     double? longitude,
   }) async {
+    // Search may trigger a backend fallback to Google Places when the local
+    // external_location cache has too few matching results.
     final uri = Uri.parse('$baseUrl/map/search').replace(
       queryParameters: {
         'query': query,

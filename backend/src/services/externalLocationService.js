@@ -1,5 +1,6 @@
 const pool = require('../db');
 
+// Reads all cached third-party locations, independent of source provider.
 async function getAllCachedLocations() {
     const result = await pool.query(`
         SELECT *
@@ -15,6 +16,7 @@ async function getNearbyCachedLocations(
     longitude,
     radius = 1000
 ) {
+    // PostGIS filters and orders by distance from the requested coordinate.
     const result = await pool.query(
         `
         SELECT
@@ -60,6 +62,8 @@ async function getNearbyCachedLocations(
 
 async function saveLocations(locations) {
     for (const location of locations) {
+        // Upsert keeps the cache fresh when the same provider/source id is
+        // fetched again from Google Places or Accessibility Cloud.
         await pool.query(
             `
             INSERT INTO external_location (

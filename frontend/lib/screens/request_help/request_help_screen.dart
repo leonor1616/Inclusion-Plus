@@ -26,6 +26,8 @@ class RequestHelpScreen extends StatefulWidget {
 }
 
 class _RequestHelpScreenState extends State<RequestHelpScreen> {
+  // Prototype location used by the backend request until dynamic campus
+  // location selection is connected to the assistance flow.
   static const int _locationId = 1;
 
   final TextEditingController _detailsController = TextEditingController();
@@ -62,6 +64,8 @@ class _RequestHelpScreenState extends State<RequestHelpScreen> {
     final token = context.read<AuthProvider>().token;
     if (token != null && token.isNotEmpty) {
       try {
+        // This is a real backend write; UI still advances if the backend is
+        // unavailable so the prototype flow can be demonstrated.
         await ApiService.createHelpRequest(
           token: token,
           incampusUniversityLocationId: _locationId,

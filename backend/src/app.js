@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+// Central Express application: wires middleware, public health endpoints,
+// protected feature routes, static uploads, and external service façades.
 const pool = require('./db');
 const authMiddleware = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
@@ -59,6 +61,7 @@ app.use(cors());
 app.use('/upload', uploadRoutes);
 
 app.use(express.json());
+// Uploaded files are stored on disk and exposed through a static URL path.
 app.use('/uploads', express.static('uploads'));
 
 // Public routes
@@ -78,12 +81,14 @@ app.get('/test-db', async (req, res) => {
     const result = await pool.query('SELECT NOW()');
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error(err); 
     res.status(500).json({ error: 'DB connection failed' });
   }
 });
 
 // Route modules
+// Each route module keeps URL definitions thin and delegates business/data work
+// to controllers or service modules.
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/profile', profileRoutes);

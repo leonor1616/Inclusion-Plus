@@ -25,6 +25,8 @@ class _AIChatScreenState extends State<AIChatScreen> {
   }
 
   Future<void> _loadAIResponse() async {
+    // The screen is read-only: it loads one generated summary for the place
+    // passed from MapScreen and then renders the response.
     final response = await _geminiService.getPlaceSummary(widget.place);
     if (mounted) {
       setState(() {

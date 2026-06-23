@@ -1,6 +1,8 @@
 const GOOGLE_ROUTES_URL =
   'https://routes.googleapis.com/directions/v2:computeRoutes';
 
+// Converts Google's duration format (for example "420s") into API-friendly
+// numeric seconds and a label already suitable for the Flutter route cards.
 function formatDuration(duration) {
   const seconds = Number(String(duration || '0s').replace('s', ''));
   const minutes = Math.max(1, Math.round(seconds / 60));
@@ -56,6 +58,8 @@ function getRouteModeSummary(route, travelMode) {
   const steps = route.legs?.flatMap((leg) => leg.steps || []) || [];
   const modes = ['Walking'];
 
+  // Transit routes normally include walking access legs; collect the public
+  // transport vehicle types without repeating equivalent modes.
   steps.forEach((step) => {
     if (step.travelMode !== 'TRANSIT') return;
 
@@ -152,6 +156,8 @@ async function fetchRoutesForMode({
   destinationLng,
   travelMode,
 }) {
+  // The backend requests only the fields consumed by the frontend to keep
+  // Google Routes responses smaller and cheaper to parse.
   const response = await fetch(GOOGLE_ROUTES_URL, {
     method: 'POST',
     headers: {
@@ -205,6 +211,7 @@ async function fetchRoutesForMode({
       modeSummary: getRouteModeSummary(route, travelMode),
       lineSummary: getTransitSummary(route, travelMode),
       encodedPolyline: route.polyline?.encodedPolyline || null,
+      // The Flutter app can open this URL in the native Google Maps app.
       googleMapsUrl:
         `https://www.google.com/maps/dir/?api=1` +
         `&origin=${originLat},${originLng}` +
@@ -221,6 +228,8 @@ async function fetchRoutes({
   destinationLat,
   destinationLng,
 }) {
+  // WALK and TRANSIT are fetched in parallel so the route sheet can compare
+  // options without waiting for one mode to finish before starting the next.
   const [walkingRoutes, transitRoutes] = await Promise.all([
     fetchRoutesForMode({
       originLat,

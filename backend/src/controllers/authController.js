@@ -4,6 +4,8 @@ const pool = require('../db');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_later';
 
+// Authentication controller: stores only password hashes and returns a signed
+// JWT that the Flutter app later sends as a Bearer token.
 exports.register = async (req, res) => {
   const { email, password, full_name, account_type, university_id, country_code, city } = req.body;
 
@@ -17,6 +19,7 @@ exports.register = async (req, res) => {
       return res.status(409).json({ error: 'Email already registered' });
     }
 
+    // bcrypt adds a salt internally; the plain password is never persisted.
     const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
@@ -54,6 +57,8 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    // The token payload is intentionally small: enough to identify the user in
+    // protected controllers without embedding mutable profile data.
     const token = jwt.sign(
       { id: user.id, email: user.email },
       JWT_SECRET,

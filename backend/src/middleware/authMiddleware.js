@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_later';
 
+// Validates Bearer tokens created at login and exposes the decoded user payload
+// to downstream controllers through req.user.
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];

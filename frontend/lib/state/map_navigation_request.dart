@@ -10,6 +10,8 @@ enum MapNavigationMode {
 }
 
 class MapNavigationRequest {
+  // id lets MapScreen distinguish a new navigation command from the previous
+  // one even if both commands have the same mode/place values.
   final int id;
   final MapNavigationMode mode;
   final MapPlace? place;

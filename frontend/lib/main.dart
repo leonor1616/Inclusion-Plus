@@ -17,6 +17,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
     
 
+  // AuthProvider is registered at the root so any screen can read the current
+  // session, user data, and auth actions through Provider.
   runApp(
     ChangeNotifierProvider(
       create: (_) => AuthProvider(),
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
 
       home: Consumer<AuthProvider>(
         builder: (context, auth, child) {
+          // The first screen is selected from auth state; AuthGate handles
+          // restoring a saved token before showing login or the main shell.
           if (auth.isAuthenticated) {
             //return const HomeScreen();
             return const MainShell();

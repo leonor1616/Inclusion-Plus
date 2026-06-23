@@ -1,8 +1,8 @@
-//responsabilidades: Chamar Accessibility Cloud
-//Normalizar resposta - não guarda na BD
-
 const axios = require('axios');
 
+// Calls Accessibility Cloud and normalizes its GeoJSON features into the same
+// shape expected by the external location cache. Persistence is handled by
+// externalLocationService, not here.
 function normalizeAccessibilityCloudPlace(feature) {
   const properties = feature.properties || {};
   const coordinates = feature.geometry?.coordinates || [];
@@ -32,6 +32,7 @@ async function fetchPlaces(
   longitude,
   radius = 1000
 ) {
+  // The API returns place-infos as GeoJSON features around a coordinate.
   const response = await axios.get(
     'https://accessibility-cloud-v2.freetls.fastly.net/place-infos.json',
     {

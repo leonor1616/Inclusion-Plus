@@ -180,6 +180,8 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    // Initial load combines backend place data with the device location; either
+    // one may fail independently without blocking the map screen.
     _loadPlaces();
     _loadUserLocation();
     _placeSheetController.addListener(_handlePlaceSheetSizeChanged);
@@ -207,6 +209,8 @@ class _MapScreenState extends State<MapScreen> {
     if (!mounted || request == null) return;
     if (_handledNavigationRequestId == request.id) return;
 
+    // Navigation requests are consumed once so rebuilding the tab does not
+    // repeatedly reopen search or recalculate directions.
     _handledNavigationRequestId = request.id;
 
     switch (request.mode) {
@@ -259,6 +263,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _loadUserLocation() async {
     try {
+      // Location permission is requested lazily only when the map opens.
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) return;
 
@@ -317,6 +322,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _loadPlaces() async {
     try {
+      // Default campus coordinates are used as the first map query center.
       final places = await _mapPlaceService.getPlaces(
         latitude: initialPosition.latitude,
         longitude: initialPosition.longitude,
@@ -883,6 +889,8 @@ class _MapScreenState extends State<MapScreen> {
     });
 
     try {
+      // The backend returns route options from Google Routes; the first route is
+      // selected by default and drawn as a polyline overlay.
       final routes = await _mapDirectionsService.getDirections(
         originLat: _routeOrigin.latitude,
         originLng: _routeOrigin.longitude,
@@ -943,6 +951,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _openRouteInGoogleMaps(RouteOption route) async {
+    // Hand off turn-by-turn navigation to the native Google Maps app/browser.
     final uri = Uri.parse(route.googleMapsUrl);
 
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {

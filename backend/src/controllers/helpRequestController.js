@@ -1,5 +1,6 @@
 const pool = require('../db');
 
+// Help requests are user-scoped records for campus assistance workflows.
 exports.createHelpRequest = async (req, res) => {
   const {
     incampus_university_location_id,

@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Accessibility profile stores user-specific needs/preferences as JSONB so the
+// schema can evolve without new columns for every preference type.
 exports.getProfile = async (req, res) => {
   try {
     const result = await pool.query(
@@ -37,6 +39,7 @@ exports.updateProfile = async (req, res) => {
 
     let result;
 
+    // Upsert-like behavior: create the profile on first save, update it later.
     if (existing.rows.length === 0) {
       result = await pool.query(
         `INSERT INTO accessibility_profile (

@@ -1,4 +1,6 @@
 class RouteOption {
+  // Normalized route data returned by the backend after Google Routes
+  // formatting. The encodedPolyline is rendered on the map when available.
   final String id;
   final String durationText;
   final String distanceText;

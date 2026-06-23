@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Favorites support both in-campus and external entities. Database constraints
+// ensure each favorite points to exactly one location type.
 exports.addFavoriteLocation = async (req, res) => {
   const { incampus_university_location_id, external_location_id } = req.body;
 

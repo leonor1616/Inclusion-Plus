@@ -32,6 +32,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
     Future.microtask(() {
       if (!mounted) return;
       final token = context.read<AuthProvider>().token;
+      // Store currently keeps the visible feed deterministic and local; this
+      // call is retained as the integration point for future backend loading.
       _store.loadBackendPosts(token: token);
     });
   }

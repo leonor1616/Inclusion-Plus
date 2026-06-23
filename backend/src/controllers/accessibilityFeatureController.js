@@ -1,5 +1,7 @@
 const pool = require('../db');
 
+// Accessibility feature endpoints manage reusable feature types and the
+// features attached to specific in-campus locations.
 exports.getFeatureTypes = async (req, res) => {
   try {
     const result = await pool.query(
